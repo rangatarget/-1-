@@ -14,22 +14,31 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
-    val firstFragment = FirstFragment()
-    val secondFragment = SecondFragment()
-    val thirdFragment = ThirdFragment()
+    private lateinit var viewPager: ViewPager2
+    private lateinit var tabLayout: TabLayout
 
-    val fragments = arrayListOf<Fragment>(firstFragment, secondFragment, thirdFragment)
-    private val tabTextList = listOf("TAB1","TAB2","TAB3")
+    class MyFragmentPagerAdapter(activity: FragmentActivity):FragmentStateAdapter(activity){
+        val fragments : List<Fragment>
+        init {
+            fragments = listOf(FirstFragment(), SecondFragment(), ThirdFragment())
+        }
+
+        override fun getItemCount(): Int = fragments.size
+        override fun createFragment(position: Int): Fragment = fragments[position]
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.mainViewpager2.adapter = ViewPager2Adapter(this)
+        val adapter = MyFragmentPagerAdapter(this)
+        binding.mainViewpager2.adapter = adapter
+        TabLayoutMediator(binding.tabLayout, binding.mainViewpager2){tab, pos ->
+            tab.text="TAB${(pos+1)}"
+        }.attach()
 
     }
-
-
 
 }
 
