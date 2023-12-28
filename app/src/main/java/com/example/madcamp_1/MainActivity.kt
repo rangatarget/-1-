@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
-
     class MyFragmentPagerAdapter(activity: FragmentActivity):FragmentStateAdapter(activity){
         val fragments : List<Fragment>
         init {
