@@ -13,10 +13,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
-
-    private lateinit var viewPager: ViewPager2
-    private lateinit var tabLayout: TabLayout
-
     class MyFragmentPagerAdapter(activity: FragmentActivity):FragmentStateAdapter(activity){
         val fragments : List<Fragment>
         init {
