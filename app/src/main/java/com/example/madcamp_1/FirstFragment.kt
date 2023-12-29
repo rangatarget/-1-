@@ -55,7 +55,6 @@ class FirstFragment : Fragment() {
                     ActivityCompat.requestPermissions(context as Activity, arrayOf<String>("android.permission.READ_CONTACTS"),100)
                     Log.d("test", "permission denied")
                 }
-
             }
 
         }
