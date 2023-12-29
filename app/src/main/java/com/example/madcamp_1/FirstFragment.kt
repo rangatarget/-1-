@@ -1,6 +1,7 @@
 package com.example.madcamp_1
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -12,13 +13,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.madcamp_1.databinding.FragmentFirstBinding
 
 class FirstFragment : Fragment() {
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,35 +32,55 @@ class FirstFragment : Fragment() {
     ): View? {
         val binding = FragmentFirstBinding.inflate(inflater, container, false)
 
-
         binding.btnGetContact.setOnClickListener {
-
             if (activity?.let { checkContactsPermission(it) } == true) {
                 binding.btnGetContact.visibility = View.GONE
                 binding.rcvContact.visibility = View.VISIBLE
                 val contactCount = context?.let { getTotalContactCount (it) }
                 val cnt = contactCount?.minus(1)
-
                 Log.d("display name", context?.let { getContactDisplayNameByIndex(it, 0) } ?: "Not Found")
-
                 val itemList = ArrayList<String>()
-
                 for(i:Int in 0..cnt!!){
                     itemList.add(context?.let { getContactDisplayNameByIndex(it, i) } ?: "Not Found")
                 }
-
                 val adapter = MyContactAdapter(itemList)
                 adapter.notifyDataSetChanged()
                 binding.rcvContact.adapter = adapter
                 binding.rcvContact.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
             } else {
-                Toast.makeText(context, "연락처 접근 권한을 허용해주세요", Toast.LENGTH_SHORT).show()
+                val status = context?.let { it1 -> ContextCompat.checkSelfPermission(it1, "android.permission.READ_CONTACTS") }
+                if (status==PackageManager.PERMISSION_GRANTED){
+                    Log.d("test", "permission granted")
+                } else {
+                    ActivityCompat.requestPermissions(context as Activity, arrayOf<String>("android.permission.READ_CONTACTS"),100)
+                    Log.d("test", "permission denied")
+                }
+
             }
 
         }
 
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults[0]==PackageManager.PERMISSION_GRANTED){
+            Log.d("test", "permission granted")
+        } else {
+            Log.d("test", "permission denied")
+        }
+    }
+
 
     private fun getContactDisplayName(context: Context, phoneNumber: String): String? =
         context.contentResolver.query(
