@@ -38,10 +38,10 @@ class FirstFragment : Fragment() {
                 binding.rcvContact.visibility = View.VISIBLE
                 val contactCount = context?.let { getTotalContactCount (it) }
                 val cnt = contactCount?.minus(1)
-                Log.d("display name", context?.let { getContactDisplayNameByIndex(it, 0) } ?: "Not Found")
-                val itemList = ArrayList<String>()
+                //Log.d("display name", context?.let { getContactDisplayNameByIndex(it, 0) } ?: "Not Found")
+                val itemList = ArrayList<ContactModel>()
                 for(i:Int in 0..cnt!!){
-                    itemList.add(context?.let { getContactDisplayNameByIndex(it, i) } ?: "Not Found")
+                    context?.let { it1 -> getContactByIndex(it1, i)?.let { it1 -> itemList.add(it1) } }
                 }
                 val adapter = MyContactAdapter(itemList)
                 adapter.notifyDataSetChanged()
@@ -61,11 +61,6 @@ class FirstFragment : Fragment() {
         }
 
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
     override fun onRequestPermissionsResult(
@@ -102,9 +97,12 @@ class FirstFragment : Fragment() {
             contactName
         }
 
-    private fun getContactDisplayNameByIndex(context: Context, contactIndex: Int): String? {
-        val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-        var contactName: String? = null
+    private fun getContactByIndex(context: Context, contactIndex: Int): ContactModel? {
+        val projection = arrayOf(
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Phone.NUMBER
+        )
+        var contact: ContactModel? = null
 
         val sortOrder = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} ASC"
 
@@ -117,13 +115,18 @@ class FirstFragment : Fragment() {
         )?.use { cursor ->
             if (cursor.moveToPosition(contactIndex)) {
                 val displayNameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-                if (displayNameIndex >= 0) {
-                    contactName = cursor.getString(displayNameIndex)
+                val numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+
+                if (displayNameIndex >= 0 && numberIndex >= 0) {
+                    val name = cursor.getString(displayNameIndex)
+                    val number = cursor.getString(numberIndex)
+
+                    contact = ContactModel(name, number)
                 }
             }
         }
 
-        return contactName
+        return contact
     }
 
     private fun getTotalContactCount(context: Context): Int {
