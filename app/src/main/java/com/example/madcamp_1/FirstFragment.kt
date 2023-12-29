@@ -1,59 +1,132 @@
 package com.example.madcamp_1
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.madcamp_1.databinding.FragmentFirstBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [FirstFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FirstFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_first, container, false)
+        val binding = FragmentFirstBinding.inflate(inflater, container, false)
+
+
+        binding.btnGetContact.setOnClickListener {
+
+            if (activity?.let { checkContactsPermission(it) } == true) {
+                binding.btnGetContact.visibility = View.GONE
+                binding.rcvContact.visibility = View.VISIBLE
+                val contactCount = context?.let { getTotalContactCount (it) }
+                val cnt = contactCount?.minus(1)
+
+                Log.d("display name", context?.let { getContactDisplayNameByIndex(it, 0) } ?: "Not Found")
+
+                val itemList = ArrayList<String>()
+
+                for(i:Int in 0..cnt!!){
+                    itemList.add(context?.let { getContactDisplayNameByIndex(it, i) } ?: "Not Found")
+                }
+
+                val adapter = MyContactAdapter(itemList)
+                adapter.notifyDataSetChanged()
+                binding.rcvContact.adapter = adapter
+                binding.rcvContact.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
+            } else {
+                Toast.makeText(context, "연락처 접근 권한을 허용해주세요", Toast.LENGTH_SHORT).show()
+            }
+
+        }
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FirstFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FirstFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun getContactDisplayName(context: Context, phoneNumber: String): String? =
+        context.contentResolver.query(
+            Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber)),
+            arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME),
+            null,
+            null,
+            null
+        )?.run {
+            var contactName: String? = null
+            moveToFirst()
+            while (!isAfterLast) {
+                getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME).takeIf { it >= 0 }?.let {
+                    contactName = getString(it)
+                }
+                moveToNext()
+            }
+            close()
+            contactName
+        }
+
+    private fun getContactDisplayNameByIndex(context: Context, contactIndex: Int): String? {
+        val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+        var contactName: String? = null
+
+        val sortOrder = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} ASC"
+
+        context.contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            projection,
+            null,
+            null,
+            sortOrder
+        )?.use { cursor ->
+            if (cursor.moveToPosition(contactIndex)) {
+                val displayNameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+                if (displayNameIndex >= 0) {
+                    contactName = cursor.getString(displayNameIndex)
                 }
             }
+        }
+
+        return contactName
     }
+
+    private fun getTotalContactCount(context: Context): Int {
+        val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+        var totalCount = 0
+
+        context.contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            projection,
+            null,
+            null,
+            null
+        )?.use { cursor ->
+            totalCount = cursor.count
+        }
+
+        return totalCount
+    }
+
+    fun checkContactsPermission(activity: FragmentActivity): Boolean {
+        val permission = Manifest.permission.READ_CONTACTS
+        val granted = ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED
+        return granted
+    }
+
+
 }
