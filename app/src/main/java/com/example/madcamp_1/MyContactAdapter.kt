@@ -1,5 +1,8 @@
 package com.example.madcamp_1
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,12 +36,52 @@ class MyContactAdapter(val itemList : ArrayList<ContactModel>) :
         init {
             itemView.setOnClickListener{
                 if (contactClick.visibility == View.VISIBLE){
-                    contactClick.visibility = View.GONE
+                    collapseView(contactClick)
                 }
                 else if (contactClick.visibility == View.GONE){
-                    contactClick.visibility = View.VISIBLE
+                    expandView(contactClick)
                 }
             }
+        }
+
+        private fun expandView(view: View) {
+            view.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            val targetHeight = view.measuredHeight
+
+            val initialHeight = view.height
+            val animator = ValueAnimator.ofInt(initialHeight, targetHeight)
+
+            animator.addUpdateListener { valueAnimator ->
+                val value = valueAnimator.animatedValue as Int
+                view.layoutParams.height = value
+                view.requestLayout()
+            }
+
+            animator.duration = 300
+            animator.start()
+
+            view.visibility = View.VISIBLE
+        }
+
+
+        private fun collapseView(view: View) {
+            val initialHeight = view.height
+            val animator = ValueAnimator.ofInt(initialHeight, 0)
+
+            animator.addUpdateListener { valueAnimator ->
+                val value = valueAnimator.animatedValue as Int
+                view.layoutParams.height = value
+                view.requestLayout()
+            }
+
+            animator.duration = 300
+            animator.start()
+
+            animator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    view.visibility = View.GONE
+                }
+            })
         }
 
     }
