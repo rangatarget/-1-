@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/contact"
+        android:enabled="true"
+        android:icon="@drawable/icon_contact"
+        android:title="연락처"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/gallery"
+        android:enabled="true"
+        android:icon="@drawable/icon_gallery"
+        android:title="갤러리"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/drawing"
+        android:enabled="true"
+        android:icon="@drawable/icon_drawing"
+        android:title="그림판"
+        app:showAsAction="always"/>
+
+
+</menu>
