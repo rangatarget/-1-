@@ -34,7 +34,6 @@ private const val ARG_PARAM2 = "param2"
  */
 class SecondFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private val REQUEST_READ_EXTERMAL_STORAGE = 1000
     private var isFabOpen = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,6 +94,32 @@ class SecondFragment : Fragment() {
         return granted
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode != Activity.RESULT_OK) {
+            Toast.makeText(context,"잘못된 접근입니다",Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        when(requestCode) {
+            2000 -> {
+                val selectedImageURI : Uri? = data?.data
+
+                if(imageUriList.size == 6 ) {
+                    Toast.makeText(context,"이미지가 가득 찼습니다.",Toast.LENGTH_SHORT).show()
+                    return
+                }
+                if(selectedImageURI != null) {
+                    imageUriList.add(selectedImageURI)
+                    imageViewList[imageUriList.size -1].setImageURI(selectedImageURI)
+                }else {
+                    Toast.makeText(context,"사진을 가져오지 못했습니다",Toast.LENGTH_SHORT).show()
+                }
+            } else -> {
+            Toast.makeText(context,"잘못된 접근입니다",Toast.LENGTH_SHORT).show()
+        }
+        }
+    }
 
     companion object {
         /**
