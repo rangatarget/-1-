@@ -33,14 +33,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val status = ContextCompat.checkSelfPermission(this, "android.permission.READ_CONTACTS")
-        if (status==PackageManager.PERMISSION_GRANTED){
-            Log.d("test", "permission granted")
-        } else {
-            ActivityCompat.requestPermissions(this, arrayOf<String>("android.permission.READ_CONTACTS"),100)
-            Log.d("test", "permission denied")
-        }
-
 
         val adapter = MyFragmentPagerAdapter(this)
         binding.mainViewpager2.adapter = adapter
@@ -50,19 +42,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults[0]==PackageManager.PERMISSION_GRANTED){
-            Log.d("test", "permission granted")
-        } else {
-            Log.d("test", "permission denied")
-        }
-
-    }
 
 }
 
