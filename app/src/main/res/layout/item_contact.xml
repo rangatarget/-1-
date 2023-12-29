@@ -14,8 +14,8 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:layout_marginLeft="23dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="10dp"
             android:src="@drawable/profile_pic"/>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -48,17 +48,64 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:visibility="gone">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_weight="1"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_weight="1">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="call"
-            android:layout_marginBottom="10dp"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="text"
-            android:layout_marginBottom="10dp"/>
+                <Button
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_marginRight="4dp"
+                    android:background="@drawable/btn_call"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="전화하기"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_weight="1">
+
+                <Button
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_marginRight="4dp"
+                    android:background="@drawable/btn_message"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="문자하기"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>
