@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.madcamp_1"
-        minSdk = 34
+        minSdk = 32
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"

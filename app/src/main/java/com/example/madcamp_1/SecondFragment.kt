@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.madcamp_1.databinding.FragmentSecondBinding
 import android.Manifest
+import com.example.madcamp_1.databinding.FragmentFirstBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,16 +31,10 @@ private const val ARG_PARAM2 = "param2"
 class SecondFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private val REQUEST_READ_EXTERMAL_STORAGE = 1000
-    private lateinit var binding: FragmentSecondBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding.button21.setOnClickListener(object: View.OnClickListener {
-            override fun onClick(v: View?) {
-                Toast.makeText(activity, "토스트 메세지 띄우기 입니다.", Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 
 
@@ -48,8 +43,12 @@ class SecondFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val binding = FragmentSecondBinding.inflate(inflater, container, false)
+        binding.button21.setOnClickListener{
+            Toast.makeText(context, "토스트 메세지 띄우기 입니다.", Toast.LENGTH_SHORT).show()
+        }
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_second, container, false)
+        return binding.root
     }
 
     companion object {
