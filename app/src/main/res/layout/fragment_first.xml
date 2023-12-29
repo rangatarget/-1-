@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:orientation="vertical"
+    android:gravity="center"
     tools:context=".FirstFragment">
 
 
@@ -12,9 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rcvContact"
-        tools:listitem="@layout/item_contact"/>
+        tools:listitem="@layout/item_contact"
+        android:visibility="gone"/>
 
-
-
+    <Button
+        android:id="@+id/btnGetContact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="연락처 가져오기"
+        android:layout_gravity="center"/>
 
 </LinearLayout>

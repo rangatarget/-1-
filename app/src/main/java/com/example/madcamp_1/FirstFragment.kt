@@ -2,6 +2,7 @@ package com.example.madcamp_1
 
 import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -11,17 +12,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.madcamp_1.databinding.FragmentFirstBinding
-import com.example.madcamp_1.databinding.ItemContactBinding
 
 class FirstFragment : Fragment() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
     }
 
 
@@ -31,25 +31,32 @@ class FirstFragment : Fragment() {
     ): View? {
         val binding = FragmentFirstBinding.inflate(inflater, container, false)
 
-        val contactCount = context?.let { getTotalContactCount (it) }
-        val cnt = contactCount?.minus(1)
 
-        Log.d("display name", context?.let { getContactDisplayNameByIndex(it, 0) } ?: "Not Found")
+        binding.btnGetContact.setOnClickListener {
 
-        val itemList = ArrayList<String>()
+            if (activity?.let { checkContactsPermission(it) } == true) {
+                binding.btnGetContact.visibility = View.GONE
+                binding.rcvContact.visibility = View.VISIBLE
+                val contactCount = context?.let { getTotalContactCount (it) }
+                val cnt = contactCount?.minus(1)
 
-        for(i:Int in 0..cnt!!){
-            itemList.add(context?.let { getContactDisplayNameByIndex(it, i) } ?: "Not Found")
+                Log.d("display name", context?.let { getContactDisplayNameByIndex(it, 0) } ?: "Not Found")
+
+                val itemList = ArrayList<String>()
+
+                for(i:Int in 0..cnt!!){
+                    itemList.add(context?.let { getContactDisplayNameByIndex(it, i) } ?: "Not Found")
+                }
+
+                val adapter = MyContactAdapter(itemList)
+                adapter.notifyDataSetChanged()
+                binding.rcvContact.adapter = adapter
+                binding.rcvContact.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
+            } else {
+                Toast.makeText(context, "연락처 접근 권한을 허용해주세요", Toast.LENGTH_SHORT).show()
+            }
 
         }
-
-
-
-        val adapter = MyContactAdapter(itemList)
-        adapter.notifyDataSetChanged()
-
-        binding.rcvContact.adapter = adapter
-        binding.rcvContact.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
 
         return binding.root
     }
@@ -113,6 +120,12 @@ class FirstFragment : Fragment() {
         }
 
         return totalCount
+    }
+
+    fun checkContactsPermission(activity: FragmentActivity): Boolean {
+        val permission = Manifest.permission.READ_CONTACTS
+        val granted = ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED
+        return granted
     }
 
 
