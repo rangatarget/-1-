@@ -59,6 +59,21 @@ class FirstFragment : Fragment() {
             }
 
         }
+        if (activity?.let { checkContactsPermission(it) } == true) {
+            binding.btnGetContact.visibility = View.GONE
+            binding.rcvContact.visibility = View.VISIBLE
+            val contactCount = context?.let { getTotalContactCount (it) }
+            val cnt = contactCount?.minus(1)
+            //Log.d("display name", context?.let { getContactDisplayNameByIndex(it, 0) } ?: "Not Found")
+            val itemList = ArrayList<ContactModel>()
+            for(i:Int in 0..cnt!!){
+                context?.let { it1 -> getContactByIndex(it1, i)?.let { it1 -> itemList.add(it1) } }
+            }
+            val adapter = MyContactAdapter(itemList)
+            adapter.notifyDataSetChanged()
+            binding.rcvContact.adapter = adapter
+            binding.rcvContact.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
+        }
 
         return binding.root
     }

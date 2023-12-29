@@ -18,6 +18,10 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
+    private var firstFragment : FirstFragment? = null
+    private var secondFragment : SecondFragment? = null
+    private var thirdFragment : ThirdFragment? = null
+
     class MyFragmentPagerAdapter(activity: FragmentActivity):FragmentStateAdapter(activity){
         val fragments : List<Fragment>
         init {
@@ -33,15 +37,61 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setFragment(FirstFragment())
+        binding.bottomNavigationview.setOnItemSelectedListener{item ->
+            when(item.itemId){
+                R.id.contact -> {
+                    if(firstFragment==null){
+                        firstFragment = FirstFragment()
+                        supportFragmentManager.beginTransaction()
+                            .add(R.id.containers, firstFragment!!)
+                            .commit()
+                    }
+                    if(firstFragment!=null) supportFragmentManager.beginTransaction().show(firstFragment!!).commit()
+                    if(secondFragment!=null) supportFragmentManager.beginTransaction().hide(secondFragment!!).commit()
+                    if(thirdFragment!=null) supportFragmentManager.beginTransaction().hide(thirdFragment!!).commit()
 
-        val adapter = MyFragmentPagerAdapter(this)
-        binding.mainViewpager2.adapter = adapter
-        TabLayoutMediator(binding.tabLayout, binding.mainViewpager2){tab, pos ->
-            tab.text="TAB${(pos+1)}"
-        }.attach()
+                    return@setOnItemSelectedListener true
+                }
+                R.id.gallery -> {
+                    if(secondFragment==null){
+                        secondFragment = SecondFragment()
+                        supportFragmentManager.beginTransaction()
+                            .add(R.id.containers, secondFragment!!)
+                            .commit()
+                    }
+                    if(secondFragment!=null) supportFragmentManager.beginTransaction().show(secondFragment!!).commit()
+                    if(firstFragment!=null) supportFragmentManager.beginTransaction().hide(firstFragment!!).commit()
+                    if(thirdFragment!=null) supportFragmentManager.beginTransaction().hide(thirdFragment!!).commit()
+
+                    return@setOnItemSelectedListener true
+                }
+                R.id.drawing -> {
+                    if(thirdFragment==null){
+                        thirdFragment = ThirdFragment()
+                        supportFragmentManager.beginTransaction()
+                            .add(R.id.containers, thirdFragment!!)
+                            .commit()
+                    }
+                    if(thirdFragment!=null) supportFragmentManager.beginTransaction().show(thirdFragment!!).commit()
+                    if(secondFragment!=null) supportFragmentManager.beginTransaction().hide(secondFragment!!).commit()
+                    if(firstFragment!=null) supportFragmentManager.beginTransaction().hide(firstFragment!!).commit()
+
+                    return@setOnItemSelectedListener true
+                }
+            }
+            true
+        }
+
+
 
     }
 
+    private fun setFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.containers, fragment)
+            .commit()
+    }
 
 }
 

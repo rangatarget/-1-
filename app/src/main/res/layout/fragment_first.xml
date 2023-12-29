@@ -1,19 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FFFFFF"
-    android:orientation="vertical"
-    android:gravity="center"
     tools:context=".FirstFragment">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:fitsSystemWindows="true"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            app:expandedTitleTextColor="#000000"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="#00000000">
+
+            <androidx.appcompat.widget.Toolbar
+                android:background="#FFFFFF"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="연락처"
+                app:titleTextColor="@color/white"
+                app:layout_collapseMode="pin"
+                app:elevation="0dp"/>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rcvContact"
         tools:listitem="@layout/item_contact"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:background="@drawable/background_contact_rcv"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:visibility="gone"/>
 
     <Button
@@ -23,4 +53,4 @@
         android:text="연락처 가져오기"
         android:layout_gravity="center"/>
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
