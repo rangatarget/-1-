@@ -3,6 +3,8 @@ package com.example.madcamp_1
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.TranslateAnimation
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -26,5 +28,18 @@ class MyContactAdapter(val itemList : ArrayList<ContactModel>) :
     inner class BoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name = itemView.findViewById<TextView>(R.id.contact_name)
         val number = itemView.findViewById<TextView>(R.id.contact_number)
+        val contactClick = itemView.findViewById<LinearLayout>(R.id.contact_clicked)
+
+        init {
+            itemView.setOnClickListener{
+                if (contactClick.visibility == View.VISIBLE){
+                    contactClick.visibility = View.GONE
+                }
+                else if (contactClick.visibility == View.GONE){
+                    contactClick.visibility = View.VISIBLE
+                }
+            }
+        }
+
     }
 }

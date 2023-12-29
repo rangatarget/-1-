@@ -1,37 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:orientation="horizontal"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:gravity="center_vertical">
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_marginLeft="23dp"
-        android:layout_marginRight="8dp"
-        android:src="@drawable/profile_pic"/>
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp">
 
-        <TextView
-            android:id="@+id/contact_name"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginLeft="23dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/profile_pic"/>
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16dp"
-            android:text="Name"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/contact_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:text="Name"/>
 
 
-        <TextView
-            android:id="@+id/contact_number"
+            <TextView
+                android:id="@+id/contact_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:text="010-1234-5678"
+                android:textColor="#888888"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/contact_clicked"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginBottom="10dp">
+
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
-            android:text="010-1234-5678"
-            android:textColor="#888888"/>
-
+            android:text="call"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="text"/>
     </LinearLayout>
 
 </LinearLayout>
