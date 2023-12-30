@@ -44,7 +44,7 @@ class ThirdFragment : Fragment() {
             toggleFab(fabMain, fabDrawing, fabText)
         }
         fabDrawing.setOnClickListener{
-            val intent = Intent(context, TextMemoEditActivity::class.java)
+            val intent = Intent(context, DrawingMemoEditActivity::class.java)
             startActivity(intent)
 
             Log.d("test", "fabDrawing 클릭됨")        }
