@@ -44,12 +44,12 @@ class ThirdFragment : Fragment() {
             toggleFab(fabMain, fabDrawing, fabText)
         }
         fabDrawing.setOnClickListener{
-            Toast.makeText(context, "드로잉 버튼 클릭됨", Toast.LENGTH_SHORT).show()
-        }
+            val intent = Intent(context, TextMemoEditActivity::class.java)
+            startActivity(intent)
+
+            Log.d("test", "fabDrawing 클릭됨")        }
 
         fabText.setOnClickListener {
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.detach(this@ThirdFragment).attach(this@ThirdFragment).commit()
             val intent = Intent(context, TextMemoEditActivity::class.java)
             startActivity(intent)
 
