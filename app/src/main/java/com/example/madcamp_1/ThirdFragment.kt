@@ -2,6 +2,7 @@ package com.example.madcamp_1
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -45,7 +46,9 @@ class ThirdFragment : Fragment() {
         }
 
         fabText.setOnClickListener {
-            Toast.makeText(context, "텍스트 버튼 클릭됨", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(context, "텍스트 버튼 클릭됨", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(activity, TextMemoEditActivity::class.java))
+
         }
 
         return binding.root
