@@ -78,7 +78,7 @@ class MyContactAdapter(val itemList : ArrayList<ContactModel>) :
                         MY_PERMISSIONS_REQUEST_CALL_PHONE
                     )
                 }
-                Toast.makeText(itemView.context, "전화하기 버튼 클릭됨", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(itemView.context, "전화하기 버튼 클릭됨", Toast.LENGTH_SHORT).show()
                 Log.d("test", "전화하기 버튼 클릭됨")
             }
             
@@ -90,7 +90,7 @@ class MyContactAdapter(val itemList : ArrayList<ContactModel>) :
 
                 itemView.context.startActivity(smsIntent)
 
-                Toast.makeText(itemView.context, "문자하기 버튼 클릭됨", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(itemView.context, "문자하기 버튼 클릭됨", Toast.LENGTH_SHORT).show()
                 Log.d("test", "문자하기 버튼 클릭됨")
             }
             
