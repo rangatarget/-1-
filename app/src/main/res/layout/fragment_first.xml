@@ -43,6 +43,8 @@
         tools:listitem="@layout/item_contact"
         android:layout_marginRight="5dp"
         android:layout_marginLeft="5dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
         android:background="@drawable/background_contact_rcv"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:visibility="gone"/>
