@@ -34,6 +34,7 @@ class FirstFragment : Fragment() {
 
         binding.btnGetContact.setOnClickListener {
             if (activity?.let { checkContactsPermission(it) } == true) {
+                binding.appBarLayout.visibility = View.VISIBLE
                 binding.btnGetContact.visibility = View.GONE
                 binding.rcvContact.visibility = View.VISIBLE
                 val contactCount = context?.let { getTotalContactCount (it) }
@@ -59,6 +60,7 @@ class FirstFragment : Fragment() {
 
         }
         if (activity?.let { checkContactsPermission(it) } == true) {
+            binding.appBarLayout.visibility = View.VISIBLE
             binding.btnGetContact.visibility = View.GONE
             binding.rcvContact.visibility = View.VISIBLE
             val contactCount = context?.let { getTotalContactCount (it) }
