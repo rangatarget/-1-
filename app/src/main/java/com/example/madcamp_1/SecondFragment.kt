@@ -28,23 +28,6 @@ class SecondFragment : Fragment() {
     ): View? {
         val binding = FragmentSecondBinding.inflate(inflater, container, false)
 
-        binding.btnddd.setOnClickListener {
-
-            if (activity?.let { checkGalleryPermission(it) } == true) {
-            }
-            else{
-                Toast.makeText(context,"dddd", Toast.LENGTH_SHORT).show()
-
-                val status = context?.let { it1 -> ContextCompat.checkSelfPermission(it1, "android.permission.READ_MEDIA_IMAGES") }
-                if (status==PackageManager.PERMISSION_GRANTED){
-                    Log.d("test", "permission granted")
-                } else {
-                    ActivityCompat.requestPermissions(context as Activity, arrayOf<String>("android.permission.READ_MEDIA_IMAGES"),1000)
-                    Log.d("test", "permission denied")
-                }
-            }
-
-        }
 
         // Inflate the layout for this fragment
         return binding.root
