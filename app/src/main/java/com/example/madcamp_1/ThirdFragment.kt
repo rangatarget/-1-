@@ -46,13 +46,13 @@ class ThirdFragment : Fragment() {
         fabDrawing.setOnClickListener{
             val intent = Intent(context, DrawingMemoEditActivity::class.java)
             startActivity(intent)
-
+            activity?.finish()
             Log.d("test", "fabDrawing 클릭됨")        }
 
         fabText.setOnClickListener {
             val intent = Intent(context, TextMemoEditActivity::class.java)
             startActivity(intent)
-
+            activity?.finish()
             Log.d("test", "fabText 클릭됨")
         }
         val itemList : ArrayList<MemoModel> = ArrayList()
