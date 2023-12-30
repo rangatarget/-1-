@@ -20,7 +20,6 @@ import java.util.Calendar
 class ThirdFragment : Fragment() {
 
     private var isFabOpen = false
-    private val REQUEST_CODE_TEXTMEMO_ACTIVITY = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,9 +49,8 @@ class ThirdFragment : Fragment() {
         }
 
         fabText.setOnClickListener {
-            val intent = Intent(requireActivity(), TextMemoEditActivity::class.java)
-            startActivityForResult(intent, REQUEST_CODE_TEXTMEMO_ACTIVITY)
-
+            val intent = Intent(context, TextMemoEditActivity::class.java)
+            startActivity(intent)
         }
         val itemList : ArrayList<MemoModel> = ArrayList()
 
