@@ -14,7 +14,6 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:layout_marginLeft="24dp"
             android:layout_marginRight="10dp"
             android:src="@drawable/profile_pic"/>
         <LinearLayout
@@ -109,5 +108,6 @@
         </LinearLayout>
 
     </LinearLayout>
+
 
 </LinearLayout>
