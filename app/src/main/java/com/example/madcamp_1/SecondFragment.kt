@@ -21,20 +21,17 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.madcamp_1.databinding.FragmentFirstBinding
 import android.animation.*
+import android.content.Context
+import android.provider.ContactsContract
+import android.provider.MediaStore
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Recycler
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SecondFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SecondFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var isFabOpen = false
+    private var imagelist = ArrayList<ListItemModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -68,8 +65,8 @@ class SecondFragment : Fragment() {
                 val status = context?.let { it1 -> ContextCompat.checkSelfPermission(it1, "android.permission.READ_MEDIA_IMAGES") }
                 if (status==PackageManager.PERMISSION_GRANTED){
                     Toast.makeText(context, "권한 생김", Toast.LENGTH_SHORT).show()
-                    val intent: Intent = Intent(Intent.ACTION_GET_CONTENT)
-                    intent.setType("image/*")
+                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type = "image/*"
                     startActivityForResult(intent, 2000)
                 } else {
                     ActivityCompat.requestPermissions(context as Activity,
@@ -84,6 +81,12 @@ class SecondFragment : Fragment() {
         binding.button22.setOnClickListener {
             Toast.makeText(context, "삭제 버튼 클릭", Toast.LENGTH_SHORT).show()
         }
+
+        val adapter = RecyclerAdapter(imagelist)
+        adapter.notifyDataSetChanged()
+        binding.rcvGallery.adapter = adapter
+        binding.rcvGallery.layoutManager = GridLayoutManager(requireContext(), 3)
+
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -96,29 +99,19 @@ class SecondFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode != Activity.RESULT_OK) {
-            Toast.makeText(context, "잘못된 접근입니다", Toast.LENGTH_SHORT).show()
-            return
-        }
-    }
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                2000 -> {
+                    val uri = data?.data
+                    imagelist.add(ListItemModel("image", uri, "description"))
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SecondFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SecondFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    val rcvgallery = activity?.findViewById<RecyclerView>(R.id.rcvGallery)
+                    val adapter = RecyclerAdapter(imagelist)
+                    adapter.notifyDataSetChanged()
+                    rcvgallery?.adapter = adapter
+                    rcvgallery?.layoutManager = GridLayoutManager(requireContext(), 3)
                 }
             }
+        }
     }
 }
