@@ -10,8 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.madcamp_1.databinding.FragmentThirdBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.Calendar
 
 
 class ThirdFragment : Fragment() {
@@ -50,6 +53,20 @@ class ThirdFragment : Fragment() {
             startActivity(Intent(activity, TextMemoEditActivity::class.java))
 
         }
+        val itemList : ArrayList<MemoModel> = ArrayList()
+
+        for (i in 1..7) {
+            val memo = MemoModel(
+                title = "Memo $i",
+                date = generateRandomDate()
+            )
+            itemList.add(memo)
+        }
+
+        val adapter = MyMemoAdapter(itemList)
+        adapter.notifyDataSetChanged()
+        binding.rcvMemo.adapter = adapter
+        binding.rcvMemo.layoutManager = GridLayoutManager(requireContext(), 3)
 
         return binding.root
     }
@@ -99,7 +116,15 @@ class ThirdFragment : Fragment() {
         isFabOpen = !isFabOpen
     }
 
+    fun generateRandomDate(): String {
+        val calendar = Calendar.getInstance()
+        val year = (Math.random() * 10).toInt() + 2020 // 임의의 년도 (2020 ~ 2029)
+        val month = (Math.random() * 12).toInt() + 1 // 임의의 월 (1 ~ 12)
+        val day = (Math.random() * 28).toInt() + 1 // 임의의 일 (1 ~ 28)
 
+        calendar.set(year, month, day)
+        return "${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH)}-${calendar.get(Calendar.DAY_OF_MONTH)}"
+    }
 
 
 }

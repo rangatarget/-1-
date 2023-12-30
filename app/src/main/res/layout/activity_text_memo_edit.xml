@@ -29,10 +29,11 @@
     </androidx.appcompat.widget.Toolbar>
 
     <EditText
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:layout_margin="20dp"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_margin="15dp"
         android:scrollbars="vertical"
         android:inputType="textMultiLine"
+        android:background="@android:color/transparent"
         />
 </LinearLayout>
