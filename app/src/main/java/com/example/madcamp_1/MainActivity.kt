@@ -22,18 +22,10 @@ class MainActivity : AppCompatActivity() {
     private var secondFragment : SecondFragment? = null
     private var thirdFragment : ThirdFragment? = null
 
-    class MyFragmentPagerAdapter(activity: FragmentActivity):FragmentStateAdapter(activity){
-        val fragments : List<Fragment>
-        init {
-            fragments = listOf(FirstFragment(), SecondFragment(), ThirdFragment())
-        }
-
-        override fun getItemCount(): Int = fragments.size
-        override fun createFragment(position: Int): Fragment = fragments[position]
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
