@@ -1,6 +1,5 @@
 package com.example.madcamp_1
 
-import android.R.attr.fragment
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Intent
@@ -11,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.madcamp_1.databinding.FragmentThirdBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton

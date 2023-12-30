@@ -16,6 +16,8 @@ class MainActivity : AppCompatActivity() {
     private var thirdFragment : ThirdFragment? = null
 
     private var fragmentToShow = "basic"
+
+
     companion object {
         const val FRAGMENT_TO_SHOW = "fragment_to_show"
         const val FRAGMENT_FIRST = "fragment_first"

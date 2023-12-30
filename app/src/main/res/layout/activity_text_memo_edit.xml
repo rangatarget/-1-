@@ -37,6 +37,7 @@
         android:layout_margin="15dp"
         android:scrollbars="vertical"
         android:inputType="textMultiLine"
+        android:gravity="top"
         android:background="@android:color/transparent"
         />
 
