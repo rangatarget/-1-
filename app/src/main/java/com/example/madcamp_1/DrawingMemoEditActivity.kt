@@ -19,6 +19,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             startActivity(intent)
             //finish()
         }
+        val drawingView = binding.drawingView
 
         val btnBrush = binding.btnBrush
         val btnEraser = binding.btnEraser
@@ -31,11 +32,13 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         btnBrush.setOnClickListener {
             bgBrush.visibility = View.VISIBLE
             bgEraser.visibility = View.INVISIBLE
+            drawingView.setEraserMode(false)
         }
 
         btnEraser.setOnClickListener {
             bgEraser.visibility = View.VISIBLE
             bgBrush.visibility = View.INVISIBLE
+            drawingView.setEraserMode(true)
         }
 
     }
