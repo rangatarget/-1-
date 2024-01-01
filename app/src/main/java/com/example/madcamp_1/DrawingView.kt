@@ -88,5 +88,11 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
             this.setStrokeWidth(10f)
         }
     }
+    fun undoLastPath() {
+        if (coloredPaths.isNotEmpty()) {
+            coloredPaths.removeAt(coloredPaths.size - 1)
+            invalidate()
+        }
+    }
 }
 
