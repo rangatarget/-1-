@@ -82,10 +82,10 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         isEraserMode = eraser
         if(isEraserMode==true){
             this.setColor(Color.WHITE)
-            this.setStrokeWidth(10f)
+            //this.setStrokeWidth(10f)
         }else{
             this.setColor(Color.BLACK)
-            this.setStrokeWidth(10f)
+            //this.setStrokeWidth(10f)
         }
     }
     fun undoLastPath() {

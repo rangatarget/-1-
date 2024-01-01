@@ -36,6 +36,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@+id/drawingBottomMenu"
             android:background="#f5f5f5"
             android:layout_weight="1"
             android:id="@+id/containers">
@@ -49,7 +50,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/brushMenuCard"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="140dp"
             android:layout_above="@+id/drawingBottomMenu"
             app:cardCornerRadius="15dp"
             android:layout_margin="20dp"
@@ -62,7 +63,34 @@
                 android:layout_height="match_parent"
                 android:elevation="4dp"
                 android:orientation="vertical">
-                <!-- 여기에 내용 추가 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <androidx.appcompat.widget.AppCompatSeekBar
+                        android:id="@+id/brushWidthSeekBar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:max="100"
+                        android:min="1"
+                        android:progress="10"
+                        android:splitTrack="false"
+                        android:layout_marginLeft="14dp"
+                        android:layout_marginVertical="20dp"
+                        android:thumb="@drawable/seek_bar_thumb"
+                        android:progressDrawable="@drawable/seekbar"/>
+                    <TextView
+                        android:id="@+id/seekBarText"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="15dp"
+                        android:text="10"
+                        android:gravity="center"
+                        android:textSize="14dp"/>
+                </LinearLayout>
+
+
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
