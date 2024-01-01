@@ -12,36 +12,46 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.madcamp_1.databinding.FragmentSecondBinding
-import android.Manifest
-import androidx.fragment.app.FragmentActivity
 import android.animation.*
-import android.net.Uri
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileOutputStream
+import java.io.FileReader
+import java.io.FileWriter
+import java.io.IOException
+import java.io.InputStream
 
 class SecondFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+    private val REQUEST_PERMISSIONS = 1000
     private var isFabOpen = false
-    private var imagelist = ArrayList<ListItemModel>()
+    private var imagelist = ArrayList<ImageModel>()
     private var image_len = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
-
+    override fun onResume(){
+        super.onResume()
+        val temp = MyApplication.prefs.getString("image_len", "")
+        if(!temp.isNullOrBlank()) {
+            image_len = Integer.parseInt(temp)
+            for(i:Int in imagelist.size..image_len - 1){
+                Log.v("loadBitmap", i.toString())
+                loadBitmap(i)
+            }
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val temp = MyApplication.prefs.getString("image_len", "")
-        if(!temp.isNullOrBlank()) {
-            image_len = Integer.parseInt(temp)
-            for (i: Int in 0..image_len - 1) {
-                val image_uri =
-                    Uri.parse(MyApplication.prefs.getString("image" + image_len.toString(), ""))
-                imagelist.add(ListItemModel(image_len, image_uri))
-            }
-        }
 
         val binding = FragmentSecondBinding.inflate(inflater, container, false)
 
@@ -59,25 +69,8 @@ class SecondFragment : Fragment() {
         }
 
         //갤러리버튼
-        binding.button21.setOnClickListener{
-            if (activity?.let { checkExtStoPermission(it) } == true) {
-                binding.button21.visibility = View.GONE
-                Toast.makeText(context, "권한 있음", Toast.LENGTH_SHORT).show()
-            } else {
-                val status = context?.let { it1 -> ContextCompat.checkSelfPermission(it1, "android.permission.READ_MEDIA_IMAGES") }
-                if (status==PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(context, "권한 생김", Toast.LENGTH_SHORT).show()
-                    MyApplication.prefs.setString("image_len", image_len.toString())
-                    val intent = Intent(Intent.ACTION_GET_CONTENT)
-                    intent.type = "image/*"
-                    startActivityForResult(intent, 2000)
-                } else {
-                    ActivityCompat.requestPermissions(context as Activity,
-                        arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
-                        1000)
-                    Toast.makeText(context, "권한 안생김", Toast.LENGTH_SHORT).show()
-                }
-            }
+        binding.button21.setOnClickListener {
+            requestPermission()
         }
 
         //삭제버튼
@@ -85,19 +78,28 @@ class SecondFragment : Fragment() {
             Toast.makeText(context, "삭제 버튼 클릭", Toast.LENGTH_SHORT).show()
         }
 
-        val adapter = RecyclerAdapter(imagelist)
-        adapter.notifyDataSetChanged()
-        binding.rcvGallery.adapter = adapter
-        binding.rcvGallery.layoutManager = GridLayoutManager(requireContext(), 3)
-
         // Inflate the layout for this fragment
         return binding.root
     }
 
-    fun checkExtStoPermission(activity: FragmentActivity): Boolean {
-        val permission = Manifest.permission.READ_EXTERNAL_STORAGE
-        val granted = ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED
-        return granted
+    private fun requestPermission() {
+        // 권한이 부여되어 있는지 확인
+        val readStoragePermission = context?.let { it1 -> ContextCompat.checkSelfPermission(it1, "android.permission.READ_MEDIA_IMAGES") }
+        // 권한이 부여되어 있지 않다면 권한 요청
+        if (readStoragePermission != PackageManager.PERMISSION_GRANTED) {
+            Log.v("권한 요청 조건성립", "1")
+            ActivityCompat.requestPermissions(context as Activity, arrayOf<String>("android.permission.READ_MEDIA_IMAGES"), REQUEST_PERMISSIONS)
+        } else {
+            // 이미 권한이 부여된 경우 작업 수행
+            Log.v("권한 이미 있음", "1")
+            performActionWithPermissions()
+        }
+    }
+
+    private fun performActionWithPermissions() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, 2000)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -106,18 +108,37 @@ class SecondFragment : Fragment() {
             when (requestCode) {
                 2000 -> {
                     val uri = data?.data
-                    imagelist.add(ListItemModel(image_len, uri))
-
-                    val rcvgallery = activity?.findViewById<RecyclerView>(R.id.rcvGallery)
-                    val adapter = RecyclerAdapter(imagelist)
-                    adapter.notifyDataSetChanged()
-                    rcvgallery?.adapter = adapter
-                    rcvgallery?.layoutManager = GridLayoutManager(requireContext(), 3)
-                    MyApplication.prefs.setString("image_len", image_len.toString())
-                    MyApplication.prefs.setString("image" + image_len.toString(), uri.toString())
+                    val destinationFileName = "gallery_image_" + image_len.toString() + ".jpg"
+                    context?.let { saveBitmapToFile(it, uri.toString(), destinationFileName) }
                     image_len = image_len + 1
+                    MyApplication.prefs.setString("image_len", image_len.toString())
                 }
             }
+        }
+    }
+    private fun loadBitmap(index: Int){
+        val filePath = File(context?.filesDir, "gallery_image_" + index.toString() + ".jpg").absolutePath
+        val loadedBitmap = BitmapFactory.decodeFile(filePath)
+        imagelist.add(ImageModel(index, loadedBitmap))
+        val rcvgallery = activity?.findViewById<RecyclerView>(R.id.rcvGallery)
+        val adapter = RecyclerAdapter(imagelist)
+        adapter.notifyDataSetChanged()
+        rcvgallery?.adapter = adapter
+        rcvgallery?.layoutManager = GridLayoutManager(requireContext(), 3)
+    }
+    private fun saveBitmapToFile(context: Context, uri: String, filename: String) {
+        val inputStream: InputStream? = context.contentResolver.openInputStream(android.net.Uri.parse(uri))
+
+        if (inputStream != null) {
+            // 비트맵으로 변환
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+
+            // 비트맵을 파일로 저장
+            val outputStream: FileOutputStream = context.openFileOutput(filename, Context.MODE_PRIVATE)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+
         }
     }
 }

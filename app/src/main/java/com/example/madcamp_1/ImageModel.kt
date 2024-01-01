@@ -1,8 +1,9 @@
 package com.example.madcamp_1
 
+import android.graphics.Bitmap
 import android.net.Uri
 
-class ListItemModel(
+class ImageModel(
     val index: Int,
-    val uri: Uri?
+    val bitmap: Bitmap
 )
