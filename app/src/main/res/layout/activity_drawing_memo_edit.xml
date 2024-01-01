@@ -103,7 +103,7 @@
             app:cardCornerRadius="15dp"
             android:layout_margin="20dp"
             app:cardElevation="2dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <LinearLayout
                 android:id="@+id/eraserMenu"

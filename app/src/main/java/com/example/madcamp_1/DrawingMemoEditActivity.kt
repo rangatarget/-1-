@@ -60,6 +60,8 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         eraserMenu.scaleY = 0.1f
 
         btnBrush.setOnClickListener {
+            drawingView.setStrokeWidth(brushSeekBar.progress.toFloat())
+
             val targetScaleClosed = 0.1f
             val targetScaleOpen = 1f
 
@@ -86,6 +88,37 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             bgBrush.visibility = View.VISIBLE
             bgEraser.visibility = View.INVISIBLE
             drawingView.setEraserMode(false)
+        }
+
+        btnEraser.setOnClickListener {
+            drawingView.setStrokeWidth(eraserSeekBar.progress.toFloat())
+
+            val targetScaleClosed = 0.1f
+            val targetScaleOpen = 1f
+
+            if (isEraserMenuOn) {
+                ObjectAnimator.ofFloat(eraserMenu, "translationY", 500f).apply { start() }
+                ObjectAnimator.ofPropertyValuesHolder(
+                    eraserMenu,
+                    PropertyValuesHolder.ofFloat("scaleX", targetScaleClosed),
+                    PropertyValuesHolder.ofFloat("scaleY", targetScaleClosed)
+                ).apply { start() }
+                isEraserMenuOn = false
+            }
+            else if (!isEraserMenuOn && bgEraser.visibility == View.VISIBLE){
+
+                ObjectAnimator.ofFloat(eraserMenu, "translationY", 0f).apply { start() }
+                ObjectAnimator.ofPropertyValuesHolder(
+                    eraserMenu,
+                    PropertyValuesHolder.ofFloat("scaleX", targetScaleOpen),
+                    PropertyValuesHolder.ofFloat("scaleY", targetScaleOpen)
+                ).apply { start() }
+                isEraserMenuOn = true
+            }
+
+            bgEraser.visibility = View.VISIBLE
+            bgBrush.visibility = View.INVISIBLE
+            drawingView.setEraserMode(true)
         }
 
         brushSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -130,37 +163,6 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             }
         })
 
-        btnEraser.setOnClickListener {
-            drawingView.setStrokeWidth(eraserSeekBar.progress.toFloat())
-
-            val targetScaleClosed = 0.1f
-            val targetScaleOpen = 1f
-
-            if (isEraserMenuOn) {
-                ObjectAnimator.ofFloat(eraserMenu, "translationY", 500f).apply { start() }
-                ObjectAnimator.ofPropertyValuesHolder(
-                    eraserMenu,
-                    PropertyValuesHolder.ofFloat("scaleX", targetScaleClosed),
-                    PropertyValuesHolder.ofFloat("scaleY", targetScaleClosed)
-                ).apply { start() }
-                isEraserMenuOn = false
-            }
-            else if (!isEraserMenuOn && bgEraser.visibility == View.VISIBLE){
-
-                ObjectAnimator.ofFloat(eraserMenu, "translationY", 0f).apply { start() }
-                ObjectAnimator.ofPropertyValuesHolder(
-                    eraserMenu,
-                    PropertyValuesHolder.ofFloat("scaleX", targetScaleOpen),
-                    PropertyValuesHolder.ofFloat("scaleY", targetScaleOpen)
-                ).apply { start() }
-                isEraserMenuOn = true
-            }
-
-            bgEraser.visibility = View.VISIBLE
-            bgBrush.visibility = View.INVISIBLE
-            drawingView.setEraserMode(true)
-        }
-
         btnBack.setOnClickListener {
             drawingView.undoLastPath()
         }
@@ -180,7 +182,5 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         val y = location[1]
         return !(event.x > x && event.x < x + view.width && event.y > y && event.y < y + view.height)
     }
-
-
 
 }
