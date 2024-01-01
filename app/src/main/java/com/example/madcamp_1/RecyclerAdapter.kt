@@ -1,6 +1,7 @@
 package com.example.madcamp_1
 
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +26,11 @@ class RecyclerAdapter(val itemList: ArrayList<ImageModel>) :
     }
 
     inner class BoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val img = itemView.findViewById<ImageView>(R.id.imageView);
+        val img = itemView.findViewById<ImageView>(R.id.imageView)
+
+        init{itemView.setOnClickListener{
+            Log.v("사진 클릭", "상세 로그")
+        }}
         fun bind(item: ImageModel){
             img.setImageBitmap(item.bitmap)
         }

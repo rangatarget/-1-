@@ -16,7 +16,10 @@ import android.animation.*
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.provider.MediaStore
 import android.util.Log
+import android.widget.GridView
+import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.BufferedReader
@@ -29,7 +32,8 @@ import java.io.IOException
 import java.io.InputStream
 
 class SecondFragment : Fragment() {
-    private val REQUEST_PERMISSIONS = 1000
+    private val REQUEST_PERMISSIONS_READ_MEDIA_IMAGES = 1000
+    private val REQUEST_PERMISSIONS_CAMERA = 1001
     private var isFabOpen = false
     private var imagelist = ArrayList<ImageModel>()
     private var image_len = 0
@@ -70,36 +74,59 @@ class SecondFragment : Fragment() {
 
         //갤러리버튼
         binding.button21.setOnClickListener {
-            requestPermission()
+            requestPermission_Gallery()
         }
 
-        //삭제버튼
+        //카메라버튼
         binding.button22.setOnClickListener {
-            Toast.makeText(context, "삭제 버튼 클릭", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "카메라 버튼 클릭", Toast.LENGTH_SHORT).show()
+            requestPermission_Camera()
         }
 
+        //사진 눌렀을때
         // Inflate the layout for this fragment
         return binding.root
     }
 
-    private fun requestPermission() {
+    private fun requestPermission_Gallery() {
         // 권한이 부여되어 있는지 확인
         val readStoragePermission = context?.let { it1 -> ContextCompat.checkSelfPermission(it1, "android.permission.READ_MEDIA_IMAGES") }
         // 권한이 부여되어 있지 않다면 권한 요청
         if (readStoragePermission != PackageManager.PERMISSION_GRANTED) {
-            Log.v("권한 요청 조건성립", "1")
-            ActivityCompat.requestPermissions(context as Activity, arrayOf<String>("android.permission.READ_MEDIA_IMAGES"), REQUEST_PERMISSIONS)
+            Log.v("권한 요청 조건성립", "갤러리 읽기")
+            ActivityCompat.requestPermissions(context as Activity, arrayOf<String>("android.permission.READ_MEDIA_IMAGES"), REQUEST_PERMISSIONS_READ_MEDIA_IMAGES)
         } else {
             // 이미 권한이 부여된 경우 작업 수행
-            Log.v("권한 이미 있음", "1")
-            performActionWithPermissions()
+            Log.v("권한 이미 있음", "갤러리 읽기")
+            performActionWithPermissions_Gallery()
         }
     }
 
-    private fun performActionWithPermissions() {
+    private fun requestPermission_Camera() {
+        // 권한이 부여되어 있는지 확인
+        val cameraPermission = context?.let { it1 -> ContextCompat.checkSelfPermission(it1, "android.permission.CAMERA") }
+        // 권한이 부여되어 있지 않다면 권한 요청
+        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            Log.v("권한 요청 조건성립", "카메라")
+            ActivityCompat.requestPermissions(context as Activity, arrayOf<String>("android.permission.CAMERA"), REQUEST_PERMISSIONS_CAMERA)
+        } else {
+            // 이미 권한이 부여된 경우 작업 수행
+            Log.v("권한 이미 있음", "카메라")
+            performActionWithPermissions_Camera()
+        }
+    }
+
+    private fun performActionWithPermissions_Gallery() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         startActivityForResult(intent, 2000)
+    }
+
+    private fun performActionWithPermissions_Camera() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (context?.let { takePictureIntent.resolveActivity(it.packageManager) } != null) {
+            startActivityForResult(takePictureIntent, 2001)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -109,7 +136,16 @@ class SecondFragment : Fragment() {
                 2000 -> {
                     val uri = data?.data
                     val destinationFileName = "gallery_image_" + image_len.toString() + ".jpg"
-                    context?.let { saveBitmapToFile(it, uri.toString(), destinationFileName) }
+                    context?.let { saveUriToFile(it, uri.toString(), destinationFileName) }
+                    image_len = image_len + 1
+                    MyApplication.prefs.setString("image_len", image_len.toString())
+                }
+            }
+            when (requestCode) {
+                2001 -> {
+                    val imageBitmap = data?.extras?.get("data") as Bitmap
+                    val destinationFileName = "gallery_image_" + image_len.toString() + ".jpg"
+                    context?.let { saveBitmapToFile(it, imageBitmap, destinationFileName) }
                     image_len = image_len + 1
                     MyApplication.prefs.setString("image_len", image_len.toString())
                 }
@@ -126,7 +162,7 @@ class SecondFragment : Fragment() {
         rcvgallery?.adapter = adapter
         rcvgallery?.layoutManager = GridLayoutManager(requireContext(), 3)
     }
-    private fun saveBitmapToFile(context: Context, uri: String, filename: String) {
+    private fun saveUriToFile(context: Context, uri: String, filename: String) {
         val inputStream: InputStream? = context.contentResolver.openInputStream(android.net.Uri.parse(uri))
 
         if (inputStream != null) {
@@ -140,5 +176,12 @@ class SecondFragment : Fragment() {
             outputStream.close()
 
         }
+    }
+    private fun saveBitmapToFile(context: Context, bitmap: Bitmap, filename: String) {
+        // 비트맵을 파일로 저장
+        val outputStream: FileOutputStream = context.openFileOutput(filename, Context.MODE_PRIVATE)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        outputStream.flush()
+        outputStream.close()
     }
 }
