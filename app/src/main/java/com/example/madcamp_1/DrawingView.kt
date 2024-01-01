@@ -5,6 +5,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import kotlin.properties.Delegates
 
 class ColoredPath(val path: Path, var color: Int, var strokeWidth: Float)
 
@@ -19,6 +20,9 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     private var isEraserMode = false
     private var currentColor = Color.BLACK
     private var currentStrokeWidth = 10f
+
+    private var latestColor = Color.BLACK
+    private var eraserCheck = 0
 
     init {
         paint.isAntiAlias = true
@@ -85,11 +89,12 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     fun setEraserMode(eraser:Boolean){
         isEraserMode = eraser
         if(isEraserMode==true){
+            if(eraserCheck==0) latestColor = this.getColor()
+            eraserCheck++
             this.setColor(Color.WHITE)
-            //this.setStrokeWidth(10f)
         }else{
-            this.setColor(Color.BLACK)
-            //this.setStrokeWidth(10f)
+            eraserCheck=0
+            this.setColor(latestColor)
         }
     }
     fun undoLastPath() {
