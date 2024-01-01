@@ -1,10 +1,12 @@
 package com.example.madcamp_1
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
 import kotlin.properties.Delegates
 
 class ColoredPath(val path: Path, var color: Int, var strokeWidth: Float)
@@ -16,6 +18,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     private val paint = Paint()
     private var paths: MutableList<Path> = mutableListOf()
     private var coloredPaths: MutableList<ColoredPath> = mutableListOf()
+    private var undonePaths: MutableList<ColoredPath> = mutableListOf()
 
     private var isEraserMode = false
     private var currentColor = Color.BLACK
@@ -69,7 +72,6 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                 coloredPaths.lastOrNull()?.path?.lineTo(x, y)
             }
             MotionEvent.ACTION_UP -> {
-                // Nothing to do here for now
             }
         }
 
@@ -99,9 +101,24 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     }
     fun undoLastPath() {
         if (coloredPaths.isNotEmpty()) {
-            coloredPaths.removeAt(coloredPaths.size - 1)
+            val undonePath = coloredPaths.removeAt(coloredPaths.size - 1)
+            undonePaths.add(undonePath)
             invalidate()
         }
     }
+
+    fun redoLastPath() {
+        if (undonePaths.isNotEmpty()) {
+            val redoPath = undonePaths.removeAt(undonePaths.size - 1)
+            coloredPaths.add(redoPath)
+            invalidate()
+        }
+    }
+
+    fun getColoredPaths():MutableList<ColoredPath>{
+        return coloredPaths
+    }
+
+
 }
 

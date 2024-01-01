@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MotionEvent
@@ -43,6 +44,8 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         val btnBrush = binding.btnBrush
         val btnEraser = binding.btnEraser
         val btnBack = binding.btnBack
+        val btnForward = binding.btnForward
+
 
         val bgBrush = binding.bgBrush
         val bgEraser = binding.bgEraser
@@ -66,6 +69,11 @@ class DrawingMemoEditActivity : AppCompatActivity() {
 
         btnBrush.setOnClickListener {
             drawingView.setStrokeWidth(brushSeekBar.progress.toFloat())
+
+            isEraserMenuOn = false
+            eraserMenu.y += 500f
+            eraserMenu.scaleX = 0.1f
+            eraserMenu.scaleY = 0.1f
 
             val targetScaleClosed = 0.1f
             val targetScaleOpen = 1f
@@ -97,6 +105,11 @@ class DrawingMemoEditActivity : AppCompatActivity() {
 
         btnEraser.setOnClickListener {
             drawingView.setStrokeWidth(eraserSeekBar.progress.toFloat())
+
+            isBrushMenuOn = false
+            brushMenu.y += 500f
+            brushMenu.scaleX = 0.1f
+            brushMenu.scaleY = 0.1f
 
             val targetScaleClosed = 0.1f
             val targetScaleOpen = 1f
@@ -172,8 +185,62 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             drawingView.undoLastPath()
         }
 
+        btnForward.setOnClickListener {
+            drawingView.redoLastPath()
+        }
+
         val btnColorPicker = binding.btnColorPicker
         val brushColor = binding.brushColor
+
+        val btnRed = binding.btnRed
+        val btnOrange = binding.btnOrange
+        val btnYellow = binding.btnYellow
+        val btnGreen = binding.btnGreen
+        val btnBlue = binding.btnBlue
+        val btnBrown = binding.btnBrown
+        val btnGray = binding.btnGray
+        val btnBlueGray = binding.btnBlueGray
+        val btnDarkGray = binding.btnDarkGary
+
+        btnRed.setOnClickListener {
+            setBasicColor("#FF2F22",brushColor)
+        }
+
+        btnOrange.setOnClickListener {
+            setBasicColor("#FF9800",brushColor)
+        }
+
+        btnYellow.setOnClickListener {
+            setBasicColor("#FFE03B",brushColor)
+        }
+
+        btnGreen.setOnClickListener {
+            setBasicColor("#4CAF50",brushColor)
+        }
+
+        btnBlue.setOnClickListener {
+            setBasicColor("#4490EA",brushColor)
+        }
+
+        btnBlue.setOnClickListener {
+            setBasicColor("#4490EA",brushColor)
+        }
+
+        btnBrown.setOnClickListener {
+            setBasicColor("#795548",brushColor)
+        }
+
+        btnGray.setOnClickListener {
+            setBasicColor("#9E9E9E",brushColor)
+        }
+
+        btnBlueGray.setOnClickListener {
+            setBasicColor("#607D8B",brushColor)
+        }
+
+        btnDarkGray.setOnClickListener {
+            setBasicColor("#333333",brushColor)
+        }
 
         btnColorPicker.setOnClickListener {
             openColorPicker(drawingView, brushColor, drawingView.getColor())
@@ -196,7 +263,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         return !(event.x > x && event.x < x + view.width && event.y > y && event.y < y + view.height)
     }
 
-    fun openColorPicker(dV : DrawingView, brushColor : Button, defaultColor : Int) {
+    private fun openColorPicker(dV : DrawingView, brushColor : Button, defaultColor : Int) {
         val awd = AmbilWarnaDialog(
             this,
             defaultColor,
@@ -212,6 +279,11 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             }
         )
         awd.show()
+    }
+
+    fun setBasicColor(color : String, brushColor : Button){
+        drawingView.setColor(Color.parseColor(color))
+        brushColor.backgroundTintList = ColorStateList.valueOf(Color.parseColor(color))
     }
 
 }
