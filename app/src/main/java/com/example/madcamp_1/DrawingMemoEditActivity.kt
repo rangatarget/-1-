@@ -3,23 +3,28 @@ package com.example.madcamp_1
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Intent
+import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import com.example.madcamp_1.databinding.ActivityDrawingMemoEditBinding
-
+import yuku.ambilwarna.AmbilWarnaDialog
+import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener
 
 
 class DrawingMemoEditActivity : AppCompatActivity() {
 
     private var isBrushMenuOn = false
     private var isEraserMenuOn = false
+    lateinit var drawingView: DrawingView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val binding = ActivityDrawingMemoEditBinding.inflate(layoutInflater)
@@ -33,7 +38,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             //finish()
         }
 
-        val drawingView = binding.drawingView
+        drawingView = binding.drawingView
 
         val btnBrush = binding.btnBrush
         val btnEraser = binding.btnEraser
@@ -166,6 +171,14 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         btnBack.setOnClickListener {
             drawingView.undoLastPath()
         }
+
+        val btnColorPicker = binding.btnColorPicker
+        val brushColor = binding.brushColor
+
+        btnColorPicker.setOnClickListener {
+            openColorPicker(drawingView, brushColor)
+        }
+
     }
 
     override fun onBackPressed() {
@@ -181,6 +194,24 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         val x = location[0]
         val y = location[1]
         return !(event.x > x && event.x < x + view.width && event.y > y && event.y < y + view.height)
+    }
+
+    fun openColorPicker(dV : DrawingView, brushColor : Button) {
+        val awd = AmbilWarnaDialog(
+            this,
+            R.color.colorAccent,
+            object : AmbilWarnaDialog.OnAmbilWarnaListener {
+                override fun onCancel(dialog: AmbilWarnaDialog) {
+                    // onCancel 내용
+                }
+
+                override fun onOk(dialog: AmbilWarnaDialog?, color: Int) {
+                    dV.setColor(color)
+                    brushColor.backgroundTintList = ColorStateList.valueOf(color)
+                }
+            }
+        )
+        awd.show()
     }
 
 }

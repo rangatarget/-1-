@@ -89,6 +89,18 @@
                         android:gravity="center"
                         android:textSize="14dp"/>
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/btnColorPicker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="color picker"/>
+
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -180,18 +192,20 @@
                     android:src="@drawable/background_drawing_memu"
                     android:layout_centerInParent="true"
                     android:visibility="invisible"/>
-                <ImageView
+                <Button
                     android:id="@+id/brushColor"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:src="@drawable/icon_brush_color"
-                    android:layout_centerInParent="true"/>
+                    android:background="@drawable/icon_brush_color"
+                    android:layout_centerInParent="true"
+                    android:backgroundTint="#000000"/>
+
                 <Button
                     android:id="@+id/btnBrush"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:background="@drawable/icon_brush"
-                    android:layout_centerInParent="true"/>
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/icon_brush" />
 
             </RelativeLayout>
 
