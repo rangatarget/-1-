@@ -23,6 +23,7 @@
         app:contentScrim="#00000000">
 
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/third_toolbar"
             android:background="#FFFFFF"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -39,7 +40,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rcvMemo"
-    tools:listitem="@layout/item_contact"
+    tools:listitem="@layout/item_memo"
     android:layout_marginRight="5dp"
     android:layout_marginLeft="5dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"

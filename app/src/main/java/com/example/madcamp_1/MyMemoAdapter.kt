@@ -26,5 +26,6 @@ class MyMemoAdapter (val itemList : ArrayList<MemoModel>) :
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.tvTitle)
         val date: TextView = itemView.findViewById(R.id.tvDate)
+
     }
 }

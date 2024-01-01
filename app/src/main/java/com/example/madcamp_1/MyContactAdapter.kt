@@ -40,7 +40,6 @@ class MyContactAdapter(val itemList : ArrayList<ContactModel>) :
         return itemList.count()
     }
 
-
     inner class BoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name = itemView.findViewById<TextView>(R.id.contact_name)
         val number = itemView.findViewById<TextView>(R.id.contact_number)
@@ -63,7 +62,6 @@ class MyContactAdapter(val itemList : ArrayList<ContactModel>) :
                 val phoneNumber = number.text.toString()
                 val dialIntent = Intent(Intent.ACTION_CALL, Uri.parse("tel:$phoneNumber"))
 
-
                 if (ActivityCompat.checkSelfPermission(
                         itemView.context,
                         Manifest.permission.CALL_PHONE
@@ -78,7 +76,7 @@ class MyContactAdapter(val itemList : ArrayList<ContactModel>) :
                         MY_PERMISSIONS_REQUEST_CALL_PHONE
                     )
                 }
-                Toast.makeText(itemView.context, "전화하기 버튼 클릭됨", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(itemView.context, "전화하기 버튼 클릭됨", Toast.LENGTH_SHORT).show()
                 Log.d("test", "전화하기 버튼 클릭됨")
             }
             
@@ -90,7 +88,7 @@ class MyContactAdapter(val itemList : ArrayList<ContactModel>) :
 
                 itemView.context.startActivity(smsIntent)
 
-                Toast.makeText(itemView.context, "문자하기 버튼 클릭됨", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(itemView.context, "문자하기 버튼 클릭됨", Toast.LENGTH_SHORT).show()
                 Log.d("test", "문자하기 버튼 클릭됨")
             }
             

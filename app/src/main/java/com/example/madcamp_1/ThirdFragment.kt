@@ -5,13 +5,12 @@ import android.animation.PropertyValuesHolder
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.madcamp_1.databinding.FragmentThirdBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Calendar
@@ -45,13 +44,16 @@ class ThirdFragment : Fragment() {
             toggleFab(fabMain, fabDrawing, fabText)
         }
         fabDrawing.setOnClickListener{
-            Toast.makeText(context, "드로잉 버튼 클릭됨", Toast.LENGTH_SHORT).show()
-        }
+            val intent = Intent(context, DrawingMemoEditActivity::class.java)
+            startActivity(intent)
+            activity?.finish()
+            Log.d("test", "fabDrawing 클릭됨")        }
 
         fabText.setOnClickListener {
-            //Toast.makeText(context, "텍스트 버튼 클릭됨", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(activity, TextMemoEditActivity::class.java))
-
+            val intent = Intent(context, TextMemoEditActivity::class.java)
+            startActivity(intent)
+            activity?.finish()
+            Log.d("test", "fabText 클릭됨")
         }
         val itemList : ArrayList<MemoModel> = ArrayList()
 

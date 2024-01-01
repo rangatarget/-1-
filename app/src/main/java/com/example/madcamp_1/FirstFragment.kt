@@ -80,7 +80,6 @@ class FirstFragment : Fragment() {
             binding.rcvContact.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
         }
 
-
         val dividerItemDecoration = CustomDividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
         binding.rcvContact.addItemDecoration(dividerItemDecoration)
 
@@ -99,7 +98,6 @@ class FirstFragment : Fragment() {
             Log.d("test", "permission denied")
         }
     }
-
 
     private fun getContactDisplayName(context: Context, phoneNumber: String): String? =
         context.contentResolver.query(
