@@ -46,6 +46,10 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         currentColor = color
     }
 
+    fun getColor() : Int {
+        return currentColor
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = event.x
         val y = event.y

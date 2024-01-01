@@ -176,7 +176,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         val brushColor = binding.brushColor
 
         btnColorPicker.setOnClickListener {
-            openColorPicker(drawingView, brushColor)
+            openColorPicker(drawingView, brushColor, drawingView.getColor())
         }
 
     }
@@ -196,10 +196,10 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         return !(event.x > x && event.x < x + view.width && event.y > y && event.y < y + view.height)
     }
 
-    fun openColorPicker(dV : DrawingView, brushColor : Button) {
+    fun openColorPicker(dV : DrawingView, brushColor : Button, defaultColor : Int) {
         val awd = AmbilWarnaDialog(
             this,
-            R.color.colorAccent,
+            defaultColor,
             object : AmbilWarnaDialog.OnAmbilWarnaListener {
                 override fun onCancel(dialog: AmbilWarnaDialog) {
                     // onCancel 내용
