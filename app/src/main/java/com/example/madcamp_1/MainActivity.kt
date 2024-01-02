@@ -11,11 +11,12 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
+    lateinit var drawingMemoTitle : String
+    lateinit var drawingMemoDate: String
+
     private var firstFragment : FirstFragment? = null
     private var secondFragment : SecondFragment? = null
     private var thirdFragment : ThirdFragment? = null
-
-    private var fragmentToShow = "basic"
 
     companion object {
         const val FRAGMENT_TO_SHOW = "fragment_to_show"
@@ -23,13 +24,23 @@ class MainActivity : AppCompatActivity() {
         const val FRAGMENT_SECOND = "fragment_second"
         const val FRAGMENT_THIRD = "fragment_third"
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        drawingMemoTitle = intent.getStringExtra("drawing_memo_title").toString()
+        drawingMemoDate = intent.getStringExtra("drawing_memo_date").toString()
+
+        Log.d("test", "${drawingMemoTitle}")
+        Log.d("test", "${drawingMemoDate}")
+
+
+
+
         val fragmentToShow = intent.getStringExtra(FRAGMENT_TO_SHOW)
-        Log.d("test", "${fragmentToShow}")
+        //Log.d("test", "${fragmentToShow}")
         //3번째 탭 이동
         if (fragmentToShow == "fragment_third") {
             setFragment(ThirdFragment())
@@ -104,6 +115,7 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.containers, fragment)
             .commit()
     }
+
 
 }
 
