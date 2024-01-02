@@ -93,7 +93,7 @@ class ThirdFragment : Fragment() {
                 PropertyValuesHolder.ofFloat("scaleY", targetScaleClosed)
             ).apply { start() }
 
-        //fabMain.setImageResource(R.drawable.icon_contact)
+            //fabMain.setImageResource(R.drawable.icon_contact)
 
         } else {
             ObjectAnimator.ofFloat(fabDrawing, "translationY", -200f).apply { start() }
@@ -111,7 +111,7 @@ class ThirdFragment : Fragment() {
                 PropertyValuesHolder.ofFloat("scaleY", targetScaleOpen)
             ).apply { start() }
 
-        //fabMain.setImageResource(R.drawable.icon_pencil)
+            //fabMain.setImageResource(R.drawable.icon_pencil)
 
         }
 
@@ -127,6 +127,4 @@ class ThirdFragment : Fragment() {
         calendar.set(year, month, day)
         return "${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH)}-${calendar.get(Calendar.DAY_OF_MONTH)}"
     }
-
-
 }
