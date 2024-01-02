@@ -1,6 +1,8 @@
 package com.example.madcamp_1
 
-
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 
-class RecyclerAdapter(val itemList: ArrayList<ImageModel>) :
+class RecyclerAdapter(val context: Context, val itemList: ArrayList<ImageModel>) :
     RecyclerView.Adapter<RecyclerAdapter.BoardViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardViewHolder {
@@ -28,11 +30,13 @@ class RecyclerAdapter(val itemList: ArrayList<ImageModel>) :
     inner class BoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val img = itemView.findViewById<ImageView>(R.id.imageView)
 
-        init{itemView.setOnClickListener{
-            Log.v("사진 클릭", "상세 로그")
-        }}
         fun bind(item: ImageModel){
             img.setImageBitmap(item.bitmap)
+            itemView.setOnClickListener{
+                val intent = Intent(context, ImageFullScreen::class.java)
+                intent.putExtra("image_index", item.index.toString())
+                itemView.context.startActivity(intent)
+            }
         }
     }
 

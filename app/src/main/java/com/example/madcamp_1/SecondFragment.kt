@@ -13,11 +13,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.madcamp_1.databinding.FragmentSecondBinding
 import android.animation.*
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.AdapterView
 import android.widget.GridView
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -31,18 +33,30 @@ import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
 
+private var fragmentData: String? = null
 class SecondFragment : Fragment() {
     private val REQUEST_PERMISSIONS_READ_MEDIA_IMAGES = 1000
     private val REQUEST_PERMISSIONS_CAMERA = 1001
     private var isFabOpen = false
     private var imagelist = ArrayList<ImageModel>()
     private var image_len = 0
+
+    fun newInstance(data: String): SecondFragment {
+        val fragment = SecondFragment()
+        val args = Bundle()
+        args.putString("fragmentData", data)
+        fragment.arguments = args
+        return fragment
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.v("onCreate 실행", image_len.toString())
+        fragmentData = arguments?.getString("fragmentData")
     }
 
     override fun onResume(){
         super.onResume()
+        Log.v("onResume 실행", image_len.toString())
         val temp = MyApplication.prefs.getString("image_len", "")
         if(!temp.isNullOrBlank()) {
             image_len = Integer.parseInt(temp)
@@ -56,6 +70,10 @@ class SecondFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        Log.v("image_len", image_len.toString())
+        //deleted 여부 확인
+        fragmentData?.let { isDeleted(it) }
 
         val binding = FragmentSecondBinding.inflate(inflater, container, false)
 
@@ -116,6 +134,23 @@ class SecondFragment : Fragment() {
         }
     }
 
+    private fun isDeleted(deleted: String){
+        Log.v("isDeleted 실행", "$deleted")
+        Log.v("isDeleted 실행", image_len.toString())
+        if(deleted.length > 0){
+            val index = Integer.parseInt(deleted)
+            var imagelist_temp = ArrayList<ImageModel>()
+            for(i:Int in 0..image_len - 1){
+                Log.v("deleted이동", i.toString())
+                if(i != index){
+                    imagelist_temp.add(imagelist[i])
+                }
+            }
+            imagelist = imagelist_temp
+            image_len = image_len - 1
+        }
+    }
+
     private fun performActionWithPermissions_Gallery() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
@@ -152,13 +187,16 @@ class SecondFragment : Fragment() {
             }
         }
     }
-    private fun loadBitmap(index: Int){
+    @SuppressLint("NotifyDataSetChanged")
+    public fun loadBitmap(index: Int){
         val filePath = File(context?.filesDir, "gallery_image_" + index.toString() + ".jpg").absolutePath
         val loadedBitmap = BitmapFactory.decodeFile(filePath)
         imagelist.add(ImageModel(index, loadedBitmap))
         val rcvgallery = activity?.findViewById<RecyclerView>(R.id.rcvGallery)
-        val adapter = RecyclerAdapter(imagelist)
-        adapter.notifyDataSetChanged()
+        val adapter = context?.let { RecyclerAdapter(it, imagelist) }
+        if (adapter != null) {
+            adapter.notifyDataSetChanged()
+        }
         rcvgallery?.adapter = adapter
         rcvgallery?.layoutManager = GridLayoutManager(requireContext(), 3)
     }
