@@ -2,7 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+    <item
+        android:id="@+id/menu_save"
+        android:title="이미지 저장하기" />
     <item
         android:id="@+id/menu_delete"
-        android:title="삭제" />
+        android:title="메모 삭제하기" />
 </menu>
