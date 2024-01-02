@@ -139,6 +139,17 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
 
         return tempBitmap
     }
-
+    fun setBitmapAsBackground(backgroundBitmap: Bitmap) {
+        // Set the provided bitmap as the background
+        canvas?.drawBitmap(backgroundBitmap, 0f, 0f, null)
+        // Redraw the existing paths on top of the background
+        for (coloredPath in coloredPaths) {
+            paint.color = coloredPath.color
+            paint.strokeWidth = coloredPath.strokeWidth
+            canvas?.drawPath(coloredPath.path, paint)
+        }
+        // Invalidate the view to trigger onDraw
+        invalidate()
+    }
 }
 

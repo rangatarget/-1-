@@ -74,7 +74,7 @@ class ThirdFragment : Fragment() {
 
         loadAllMemoModels()
 
-        val adapter = MyMemoAdapter(itemList)
+        val adapter = MyMemoAdapter(sortMemoModelsByDateDescending(itemList), activity as MainActivity)
         adapter.notifyDataSetChanged()
         binding.rcvMemo.adapter = adapter
         binding.rcvMemo.layoutManager = GridLayoutManager(requireContext(), 3)
@@ -185,5 +185,7 @@ class ThirdFragment : Fragment() {
             Log.e("MemoModel", "MemoModels 불러오기 중 오류 발생: ${e.message}")
         }
     }
-
+    fun sortMemoModelsByDateDescending(memoModels: ArrayList<MemoModel>): ArrayList<MemoModel> {
+        return ArrayList(memoModels.sortedByDescending { it.date })
+    }
 }

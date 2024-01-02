@@ -36,9 +36,6 @@ class MainActivity : AppCompatActivity() {
         Log.d("test", "${drawingMemoTitle}")
         Log.d("test", "${drawingMemoDate}")
 
-
-
-
         val fragmentToShow = intent.getStringExtra(FRAGMENT_TO_SHOW)
         //Log.d("test", "${fragmentToShow}")
         //3번째 탭 이동

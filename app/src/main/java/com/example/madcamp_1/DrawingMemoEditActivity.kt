@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -29,6 +30,7 @@ import com.example.madcamp_1.databinding.ActivityDrawingMemoEditBinding
 import yuku.ambilwarna.AmbilWarnaDialog
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
@@ -45,11 +47,35 @@ class DrawingMemoEditActivity : AppCompatActivity() {
 
     lateinit var memo_title : String
 
+    lateinit var drawingMemoTitle : String
+    lateinit var drawingMemoDate: String
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         val binding = ActivityDrawingMemoEditBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        drawingView = binding.drawingView
+
+        drawingMemoTitle = intent.getStringExtra("drawing_memo_title").toString()
+        drawingMemoDate = intent.getStringExtra("drawing_memo_date").toString()
+
+        Log.d("test", "${drawingMemoTitle}")
+        Log.d("test", "${drawingMemoDate}")
+
+        val setBitmap = loadMemoModelFromInternalStorage(drawingMemoTitle, drawingMemoDate)
+        val mutableBitmap = setBitmap?.copy(Bitmap.Config.ARGB_8888, true)
+        Log.d("비트맵 확인", "${setBitmap}")
+        Log.d("비트맵 확인", "${mutableBitmap}")
+
+        if (::drawingMemoDate.isInitialized){
+            Log.d("test", "setBitmap if블록 안")
+            if (setBitmap != null) {
+                if (mutableBitmap != null) {
+                    drawingView.setBitmapAsBackground(mutableBitmap)
+                }
+            }
+        }
+
 
         memo_title = binding.titleEdit.text.toString()
 
@@ -62,8 +88,6 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             startActivity(intent)
             //finish()
         }
-
-        drawingView = binding.drawingView
 
         val btnBrush = binding.btnBrush
         val btnEraser = binding.btnEraser
@@ -298,23 +322,6 @@ class DrawingMemoEditActivity : AppCompatActivity() {
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_drawing, menu)
-
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_delete -> {
-
-                return true
-            }
-            // 필요에 따라 추가 메뉴 아이템 처리
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
 
     override fun onBackPressed() {
         super.onBackPressed()
@@ -398,6 +405,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             Log.e("MemoModel", "MemoModel 저장 중 오류 발생: ${e.message}")
         }
     }
+
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun saveImageOnAboveAndroidQ(bitmap: Bitmap) {
         val fileName = System.currentTimeMillis().toString() + ".png" // 파일이름 현재시간.png
@@ -475,5 +483,31 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
+
+    private fun loadMemoModelFromInternalStorage(memoTitle: String, memoDate: String): Bitmap? {
+        try {
+            // 파일 이름 생성
+            val fileName = "${memoTitle}_${memoDate}.png"
+
+            // 내부 저장소에서 파일을 읽어옵니다.
+            val inputStream: FileInputStream = openFileInput(fileName)
+            val byteArray = inputStream.readBytes()
+            inputStream.close()
+
+            // 바이트 배열을 비트맵으로 변환
+            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+
+            Log.e("MemoModel", "MemoModel이 불러와졌습니다: $fileName")
+
+            return bitmap
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("MemoModel", "MemoModel 불러오기 중 오류 발생: ${e.message}")
+            return null
+        }
+    }
+
+
+
 
 }
