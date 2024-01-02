@@ -67,10 +67,13 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         supportActionBar?.title = ""
 
         binding.backButton.setOnClickListener {
+            saveMemoToInternalStorage()
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_THIRD)
+            intent.putExtra("drawing_memo_title", memo_title)
+            intent.putExtra("drawing_memo_date", getCurrentDateTime())
             startActivity(intent)
-            //finish()
+            finish()
         }
 
         val btnBrush = binding.btnBrush
@@ -320,6 +323,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             intent.putExtra("drawing_memo_title", memo_title)
             intent.putExtra("drawing_memo_date", getCurrentDateTime())
             startActivity(intent)
+            finish()
         }
     }
 
