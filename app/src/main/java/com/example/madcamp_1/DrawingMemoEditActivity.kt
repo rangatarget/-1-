@@ -22,6 +22,7 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -47,8 +48,6 @@ class DrawingMemoEditActivity : AppCompatActivity() {
 
     lateinit var memo_title : String
 
-    lateinit var drawingMemoTitle : String
-    lateinit var drawingMemoDate: String
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         val binding = ActivityDrawingMemoEditBinding.inflate(layoutInflater)
@@ -56,28 +55,13 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         setContentView(binding.root)
         drawingView = binding.drawingView
 
-        drawingMemoTitle = intent.getStringExtra("drawing_memo_title").toString()
-        drawingMemoDate = intent.getStringExtra("drawing_memo_date").toString()
+        memo_title = "(제목 없음)"
 
-        Log.d("test", "${drawingMemoTitle}")
-        Log.d("test", "${drawingMemoDate}")
-
-        val setBitmap = loadMemoModelFromInternalStorage(drawingMemoTitle, drawingMemoDate)
-        val mutableBitmap = setBitmap?.copy(Bitmap.Config.ARGB_8888, true)
-        Log.d("비트맵 확인", "${setBitmap}")
-        Log.d("비트맵 확인", "${mutableBitmap}")
-
-        if (::drawingMemoDate.isInitialized){
-            Log.d("test", "setBitmap if블록 안")
-            if (setBitmap != null) {
-                if (mutableBitmap != null) {
-                    drawingView.setBitmapAsBackground(mutableBitmap)
-                }
+        binding.titleEdit.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                memo_title = binding.titleEdit.text.toString()
             }
         }
-
-
-        memo_title = binding.titleEdit.text.toString()
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = ""
@@ -324,14 +308,19 @@ class DrawingMemoEditActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        saveMemoToInternalStorage()
-        val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_THIRD)
-        intent.putExtra("drawing_memo_title", memo_title)
-        intent.putExtra("drawing_memo_date", getCurrentDateTime())
-
-        startActivity(intent)
+        val titleEditText = findViewById<EditText>(R.id.title_edit)
+        // EditText가 포커스 상태인지 확인하고 포커스가 있을 때만 clearFocus() 호출
+        if (titleEditText.hasFocus()) {
+            titleEditText.clearFocus()
+        } else {
+            super.onBackPressed()
+            saveMemoToInternalStorage()
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_THIRD)
+            intent.putExtra("drawing_memo_title", memo_title)
+            intent.putExtra("drawing_memo_date", getCurrentDateTime())
+            startActivity(intent)
+        }
     }
 
     private fun isTouchOutsideView(event: MotionEvent, view: View): Boolean {

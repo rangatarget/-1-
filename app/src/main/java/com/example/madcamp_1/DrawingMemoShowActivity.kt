@@ -30,11 +30,20 @@ class DrawingMemoShowActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = ""
 
+        binding.titleEdit.text = drawingMemoTitle
+
         val setBitmap = loadMemoModelFromInternalStorage(drawingMemoTitle, drawingMemoDate)
 
         val drawingMemoShow = binding.drawingMemoShow
 
         drawingMemoShow.setImageBitmap(setBitmap)
+
+        binding.backButton.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_THIRD)
+            startActivity(intent)
+            finish()
+        }
 
     }
 
@@ -106,6 +115,7 @@ class DrawingMemoShowActivity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_THIRD)
         startActivity(intent)
+        finish()
     }
 
 }

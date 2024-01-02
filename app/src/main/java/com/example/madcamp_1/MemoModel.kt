@@ -6,5 +6,4 @@ data class MemoModel(
     //val thumbnail: String,
     val title: String,
     val date: String,
-    val thumbnail : Bitmap
-)
+    val thumbnail : Bitmap)
