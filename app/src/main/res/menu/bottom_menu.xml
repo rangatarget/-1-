@@ -14,10 +14,10 @@
         android:title="갤러리"
         app:showAsAction="always"/>
     <item
-        android:id="@+id/drawing"
+        android:id="@+id/memo"
         android:enabled="true"
-        android:icon="@drawable/icon_drawing"
-        android:title="그림판"
+        android:icon="@drawable/icon_memo"
+        android:title="메모장"
         app:showAsAction="always"/>
 
 

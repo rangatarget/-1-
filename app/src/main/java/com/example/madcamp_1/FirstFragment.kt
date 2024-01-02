@@ -4,6 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -16,7 +18,9 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.madcamp_1.databinding.FragmentFirstBinding
 
 class FirstFragment : Fragment() {
@@ -34,6 +38,7 @@ class FirstFragment : Fragment() {
 
         binding.btnGetContact.setOnClickListener {
             if (activity?.let { checkContactsPermission(it) } == true) {
+                binding.appBarLayout.visibility = View.VISIBLE
                 binding.btnGetContact.visibility = View.GONE
                 binding.rcvContact.visibility = View.VISIBLE
                 val contactCount = context?.let { getTotalContactCount (it) }
@@ -59,6 +64,7 @@ class FirstFragment : Fragment() {
 
         }
         if (activity?.let { checkContactsPermission(it) } == true) {
+            binding.appBarLayout.visibility = View.VISIBLE
             binding.btnGetContact.visibility = View.GONE
             binding.rcvContact.visibility = View.VISIBLE
             val contactCount = context?.let { getTotalContactCount (it) }
@@ -73,6 +79,10 @@ class FirstFragment : Fragment() {
             binding.rcvContact.adapter = adapter
             binding.rcvContact.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
         }
+
+
+        val dividerItemDecoration = CustomDividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
+        binding.rcvContact.addItemDecoration(dividerItemDecoration)
 
         return binding.root
     }
@@ -166,5 +176,26 @@ class FirstFragment : Fragment() {
         return granted
     }
 
+    private class CustomDividerItemDecoration(
+        context: Context?,
+        orientation: Int
+    ) : DividerItemDecoration(context, orientation) {
 
+        private val divider: Drawable? = ContextCompat.getDrawable(context!!, R.drawable.divider) // 사용자 정의 구분선 Drawable을 지정하세요.
+
+        override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+            val left = parent.paddingLeft
+            val right = parent.width - parent.paddingRight
+
+            val childCount = parent.childCount
+            for (i in 0 until childCount - 1) { // 마지막 아이템은 제외
+                val child = parent.getChildAt(i)
+                val params = child.layoutParams as RecyclerView.LayoutParams
+                val top = child.bottom + params.bottomMargin
+                val bottom = top + divider!!.intrinsicHeight
+                divider.setBounds(left, top, right, bottom)
+                divider.draw(c)
+            }
+        }
+    }
 }

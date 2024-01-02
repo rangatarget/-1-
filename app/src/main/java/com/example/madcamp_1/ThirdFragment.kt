@@ -1,59 +1,132 @@
 package com.example.madcamp_1
 
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import com.example.madcamp_1.databinding.FragmentThirdBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.Calendar
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ThirdFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ThirdFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var isFabOpen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_third, container, false)
+        val binding = FragmentThirdBinding.inflate(inflater, container, false)
+
+        val fabMain = binding.fabMain
+        val fabDrawing = binding.fabOptionDrawing
+        val fabText = binding.fabOptionText
+
+        fabDrawing.scaleX = 0.3f
+        fabDrawing.scaleY = 0.3f
+
+        fabText.scaleX = 0.3f
+        fabText.scaleY = 0.3f
+
+        fabMain.setOnClickListener {
+            toggleFab(fabMain, fabDrawing, fabText)
+        }
+        fabDrawing.setOnClickListener{
+            val intent = Intent(context, DrawingMemoEditActivity::class.java)
+            startActivity(intent)
+            activity?.finish()
+            Log.d("test", "fabDrawing 클릭됨")        }
+
+        fabText.setOnClickListener {
+            val intent = Intent(context, TextMemoEditActivity::class.java)
+            startActivity(intent)
+            activity?.finish()
+            Log.d("test", "fabText 클릭됨")
+        }
+        val itemList : ArrayList<MemoModel> = ArrayList()
+
+        for (i in 1..7) {
+            val memo = MemoModel(
+                title = "Memo $i",
+                date = generateRandomDate()
+            )
+            itemList.add(memo)
+        }
+
+        val adapter = MyMemoAdapter(itemList)
+        adapter.notifyDataSetChanged()
+        binding.rcvMemo.adapter = adapter
+        binding.rcvMemo.layoutManager = GridLayoutManager(requireContext(), 3)
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ThirdFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ThirdFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun toggleFab(fabMain:FloatingActionButton, fabDrawing : FloatingActionButton, fabText : FloatingActionButton){
+        val targetScaleClosed = 0.3f
+        val targetScaleOpen = 1f
+
+        if (isFabOpen) {
+            ObjectAnimator.ofFloat(fabDrawing, "translationY", 0f).apply { start() }
+            ObjectAnimator.ofFloat(fabText, "translationY", 0f).apply { start() }
+            Log.d("test", "닫기")
+            ObjectAnimator.ofPropertyValuesHolder(
+                fabDrawing,
+                PropertyValuesHolder.ofFloat("scaleX", targetScaleClosed),
+                PropertyValuesHolder.ofFloat("scaleY", targetScaleClosed)
+            ).apply { start() }
+
+            ObjectAnimator.ofPropertyValuesHolder(
+                fabText,
+                PropertyValuesHolder.ofFloat("scaleX", targetScaleClosed),
+                PropertyValuesHolder.ofFloat("scaleY", targetScaleClosed)
+            ).apply { start() }
+
+        //fabMain.setImageResource(R.drawable.icon_contact)
+
+        } else {
+            ObjectAnimator.ofFloat(fabDrawing, "translationY", -200f).apply { start() }
+            ObjectAnimator.ofFloat(fabText, "translationY", -400f).apply { start() }
+            Log.d("test", "열기")
+            ObjectAnimator.ofPropertyValuesHolder(
+                fabDrawing,
+                PropertyValuesHolder.ofFloat("scaleX", targetScaleOpen),
+                PropertyValuesHolder.ofFloat("scaleY", targetScaleOpen)
+            ).apply { start() }
+
+            ObjectAnimator.ofPropertyValuesHolder(
+                fabText,
+                PropertyValuesHolder.ofFloat("scaleX", targetScaleOpen),
+                PropertyValuesHolder.ofFloat("scaleY", targetScaleOpen)
+            ).apply { start() }
+
+        //fabMain.setImageResource(R.drawable.icon_pencil)
+
+        }
+
+        isFabOpen = !isFabOpen
     }
+
+    fun generateRandomDate(): String {
+        val calendar = Calendar.getInstance()
+        val year = (Math.random() * 10).toInt() + 2020 // 임의의 년도 (2020 ~ 2029)
+        val month = (Math.random() * 12).toInt() + 1 // 임의의 월 (1 ~ 12)
+        val day = (Math.random() * 28).toInt() + 1 // 임의의 일 (1 ~ 28)
+
+        calendar.set(year, month, day)
+        return "${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH)}-${calendar.get(Calendar.DAY_OF_MONTH)}"
+    }
+
+
 }
