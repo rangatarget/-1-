@@ -2,23 +2,31 @@ package com.example.madcamp_1
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.media.MediaScannerConnection
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.SeekBar
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
 import com.example.madcamp_1.databinding.ActivityDrawingMemoEditBinding
 import yuku.ambilwarna.AmbilWarnaDialog
-import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 
 class DrawingMemoEditActivity : AppCompatActivity() {
@@ -31,6 +39,9 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         val binding = ActivityDrawingMemoEditBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.title = ""
 
         binding.backButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
@@ -45,7 +56,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         val btnEraser = binding.btnEraser
         val btnBack = binding.btnBack
         val btnForward = binding.btnForward
-
+        val btnSaveImg = binding.btnSaveImg
 
         val bgBrush = binding.bgBrush
         val bgEraser = binding.bgEraser
@@ -246,6 +257,49 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             openColorPicker(drawingView, brushColor, drawingView.getColor())
         }
 
+        btnSaveImg.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                //Q 버전 이상일 경우. (안드로이드 10, API 29 이상일 경우)
+                //saveImageOnAboveAndroidQ(bitmap)
+                saveBitmapToGallery(this, drawingView.getBitmapFromPaths(), "Test", "test")
+                Toast.makeText(baseContext, "이미지 저장이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                // Q 버전 이하일 경우. 저장소 권한을 얻어온다.
+                val writePermission = ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+                if(writePermission == PackageManager.PERMISSION_GRANTED) {
+                    //saveImageOnUnderAndroidQ(bitmap)
+                    Toast.makeText(baseContext, "이미지 저장이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                } else {
+                    val requestExternalStorageCode = 1
+
+                    val permissionStorage = arrayOf(
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+
+                    ActivityCompat.requestPermissions(this, permissionStorage, requestExternalStorageCode)
+                }
+            }
+        }
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_drawing, menu)
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_delete -> {
+
+                return true
+            }
+            // 필요에 따라 추가 메뉴 아이템 처리
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onBackPressed() {
@@ -285,5 +339,30 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         drawingView.setColor(Color.parseColor(color))
         brushColor.backgroundTintList = ColorStateList.valueOf(Color.parseColor(color))
     }
+
+    fun saveBitmapToGallery(context: Context, bitmap: Bitmap, title: String, description: String) {
+        // Get the directory for the user's public pictures directory.
+        val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        val file = File(path, "$title.jpg")
+
+        try {
+            // Save the bitmap to the file
+            val stream: OutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            stream.close()
+
+            // Notify the media scanner
+            MediaScannerConnection.scanFile(
+                context,
+                arrayOf(file.toString()),
+                arrayOf("image/jpeg"),
+                null
+            )
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
 
 }

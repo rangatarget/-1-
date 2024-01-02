@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
@@ -119,6 +120,21 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         return coloredPaths
     }
 
+    fun getBitmapFromPaths(): Bitmap {
+        val tempBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val tempCanvas = Canvas(tempBitmap)
+        tempCanvas.drawColor(Color.WHITE)
+
+        for (coloredPath in coloredPaths) {
+            paint.color = coloredPath.color
+            paint.strokeWidth = coloredPath.strokeWidth
+            tempCanvas.drawPath(coloredPath.path, paint)
+        }
+
+        Log.d("비트맵 변환 확인", "$tempBitmap")
+
+        return tempBitmap
+    }
 
 }
 
