@@ -50,22 +50,21 @@ class SecondFragment : Fragment() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.v("onCreate 실행", image_len.toString())
         fragmentData = arguments?.getString("fragmentData")
+        val temp = MyApplication.prefs.getString("image_len", "")
+        if(!temp.isNullOrBlank()) image_len = Integer.parseInt(temp)
     }
 
     override fun onResume(){
         super.onResume()
         Log.v("onResume 실행", image_len.toString())
-        val temp = MyApplication.prefs.getString("image_len", "")
-        if(!temp.isNullOrBlank()) {
-            image_len = Integer.parseInt(temp)
-            for(i:Int in imagelist.size..image_len - 1){
-                Log.v("loadBitmap", i.toString())
-                loadBitmap(i)
-            }
+        for(i:Int in imagelist.size..image_len - 1){
+            Log.v("loadBitmap", i.toString())
+            loadBitmap(i)
         }
+        MyApplication.prefs.setString("image_len", image_len.toString())
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -101,7 +100,6 @@ class SecondFragment : Fragment() {
             requestPermission_Camera()
         }
 
-        //사진 눌렀을때
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -135,20 +133,16 @@ class SecondFragment : Fragment() {
     }
 
     private fun isDeleted(deleted: String){
-        Log.v("isDeleted 실행", "$deleted")
-        Log.v("isDeleted 실행", image_len.toString())
-        if(deleted.length > 0){
-            val index = Integer.parseInt(deleted)
-            var imagelist_temp = ArrayList<ImageModel>()
-            for(i:Int in 0..image_len - 1){
-                Log.v("deleted이동", i.toString())
-                if(i != index){
-                    imagelist_temp.add(imagelist[i])
-                }
-            }
-            imagelist = imagelist_temp
-            image_len = image_len - 1
+        Log.v("isDeleted", "삭제될 인덱스: " + deleted + "    image_len: " + image_len.toString())
+        val index = Integer.parseInt(deleted)
+        val file = File(context?.filesDir, "gallery_image_" + index.toString() + ".jpg")
+        file.delete()
+        for(i:Int in index + 1..image_len - 1){
+            val oldFile = File(context?.filesDir, "gallery_image_" + i.toString() + ".jpg")
+            val newFile = File(context?.filesDir, "gallery_image_" + (i-1).toString() + ".jpg")
+            oldFile.renameTo(newFile)
         }
+        image_len = image_len - 1
     }
 
     private fun performActionWithPermissions_Gallery() {
@@ -192,6 +186,7 @@ class SecondFragment : Fragment() {
         val filePath = File(context?.filesDir, "gallery_image_" + index.toString() + ".jpg").absolutePath
         val loadedBitmap = BitmapFactory.decodeFile(filePath)
         imagelist.add(ImageModel(index, loadedBitmap))
+        Log.v("imagelist 크기", (imagelist.size).toString())
         val rcvgallery = activity?.findViewById<RecyclerView>(R.id.rcvGallery)
         val adapter = context?.let { RecyclerAdapter(it, imagelist) }
         if (adapter != null) {

@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         if (fragmentToShow == "fragment_third") {
             setFragment(ThirdFragment())
             binding.bottomNavigationview.selectedItemId = R.id.memo
-
         }
         //2번째 탭 이동
         else if(fragmentToShow == "fragment_second"){
