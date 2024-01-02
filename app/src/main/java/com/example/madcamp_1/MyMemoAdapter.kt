@@ -29,7 +29,10 @@ class MyMemoAdapter (val itemList : ArrayList<MemoModel>, val activity: MainActi
     override fun onBindViewHolder(holder: MyMemoAdapter.ViewHolder, position: Int) {
         holder.title.text = itemList[position].title
         holder.date.text = itemList[position].date
-        holder.img.setImageBitmap(itemList[position].thumbnail)
+
+        val resizedBitmap = resizeBitmapWithAspectRatio(itemList[position].thumbnail, 400, 400)
+        holder.img.setImageBitmap(resizedBitmap)
+
     }
 
     override fun getItemCount(): Int {
@@ -51,5 +54,25 @@ class MyMemoAdapter (val itemList : ArrayList<MemoModel>, val activity: MainActi
             }
         }
     }
+
+    private fun resizeBitmapWithAspectRatio(originalBitmap: Bitmap, maxWidth: Int, maxHeight: Int): Bitmap {
+        val width = originalBitmap.width
+        val height = originalBitmap.height
+
+        val ratioBitmap = width.toFloat() / height.toFloat()
+        val ratioMax = maxWidth.toFloat() / maxHeight.toFloat()
+
+        var finalWidth = maxWidth
+        var finalHeight = maxHeight
+
+        if (ratioMax > ratioBitmap) {
+            finalWidth = (maxHeight.toFloat() * ratioBitmap).toInt()
+        } else {
+            finalHeight = (maxWidth.toFloat() / ratioBitmap).toInt()
+        }
+
+        return Bitmap.createScaledBitmap(originalBitmap, finalWidth, finalHeight, false)
+    }
+
 
 }
