@@ -47,7 +47,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_THIRD)
             startActivity(intent)
-            //finish()
+            finish()
         }
 
         drawingView = binding.drawingView
@@ -307,6 +307,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_THIRD)
         startActivity(intent)
+        finish()
     }
 
     private fun isTouchOutsideView(event: MotionEvent, view: View): Boolean {

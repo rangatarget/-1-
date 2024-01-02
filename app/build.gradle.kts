@@ -36,10 +36,10 @@ android {
     buildFeatures  {
         viewBinding = true
     }
-
 }
 
 dependencies {
+    implementation ("com.github.yukuku:ambilwarna:2.0.1")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.viewpager2:viewpager2:1.0.0")

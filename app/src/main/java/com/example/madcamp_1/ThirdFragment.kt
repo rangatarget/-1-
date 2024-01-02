@@ -57,14 +57,6 @@ class ThirdFragment : Fragment() {
         }
         val itemList : ArrayList<MemoModel> = ArrayList()
 
-        for (i in 1..7) {
-            val memo = MemoModel(
-                title = "Memo $i",
-                date = generateRandomDate()
-            )
-            itemList.add(memo)
-        }
-
         val adapter = MyMemoAdapter(itemList)
         adapter.notifyDataSetChanged()
         binding.rcvMemo.adapter = adapter
