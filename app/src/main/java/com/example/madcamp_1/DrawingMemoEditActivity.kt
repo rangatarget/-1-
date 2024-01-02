@@ -2,18 +2,19 @@ package com.example.madcamp_1
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.media.MediaScannerConnection
-import android.os.AsyncTask
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -22,15 +23,15 @@ import android.view.View
 import android.widget.Button
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.example.madcamp_1.databinding.ActivityDrawingMemoEditBinding
 import yuku.ambilwarna.AmbilWarnaDialog
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.OutputStream
-import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -44,6 +45,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
 
     lateinit var memo_title : String
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         val binding = ActivityDrawingMemoEditBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -68,6 +70,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         val btnBack = binding.btnBack
         val btnForward = binding.btnForward
         val btnSaveImg = binding.btnSaveImg
+        val brushColor = binding.brushColor
 
         val bgBrush = binding.bgBrush
         val bgEraser = binding.bgEraser
@@ -91,6 +94,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
 
         btnBrush.setOnClickListener {
             drawingView.setStrokeWidth(brushSeekBar.progress.toFloat())
+            drawingView.setColor(brushColor.backgroundTintList?.defaultColor ?: 0)
 
             isEraserMenuOn = false
             eraserMenu.y += 500f
@@ -107,6 +111,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
                     PropertyValuesHolder.ofFloat("scaleX", targetScaleClosed),
                     PropertyValuesHolder.ofFloat("scaleY", targetScaleClosed)
                 ).apply { start() }
+                drawingView.setLastestColor(drawingView.getColor())
                 isBrushMenuOn = false
             }
             else if (!isBrushMenuOn && bgBrush.visibility == View.VISIBLE){
@@ -212,7 +217,6 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         }
 
         val btnColorPicker = binding.btnColorPicker
-        val brushColor = binding.brushColor
 
         val btnRed = binding.btnRed
         val btnOrange = binding.btnOrange
@@ -271,23 +275,22 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         btnSaveImg.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 //Q 버전 이상일 경우. (안드로이드 10, API 29 이상일 경우)
-                //saveImageOnAboveAndroidQ(bitmap)
-                saveBitmapToGallery(this, drawingView.getBitmapFromPaths(), "Test", "test")
+                saveImageOnAboveAndroidQ(drawingView.getBitmapFromPaths())
                 Toast.makeText(baseContext, "이미지 저장이 완료되었습니다.", Toast.LENGTH_SHORT).show()
             } else {
                 // Q 버전 이하일 경우. 저장소 권한을 얻어온다.
                 val writePermission = ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
                 if(writePermission == PackageManager.PERMISSION_GRANTED) {
-                    //saveImageOnUnderAndroidQ(bitmap)
+                    saveImageOnUnderAndroidQ(drawingView.getBitmapFromPaths())
                     Toast.makeText(baseContext, "이미지 저장이 완료되었습니다.", Toast.LENGTH_SHORT).show()
                 } else {
                     val requestExternalStorageCode = 1
 
                     val permissionStorage = arrayOf(
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
                         android.Manifest.permission.WRITE_EXTERNAL_STORAGE
                     )
-
                     ActivityCompat.requestPermissions(this, permissionStorage, requestExternalStorageCode)
                 }
             }
@@ -315,7 +318,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        saveBitmapToCashe(drawingView.getBitmapFromPaths(), getCurrentDateTime(), this)
+        saveMemoToInternalStorage()
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_THIRD)
         intent.putExtra("drawing_memo_title", memo_title)
@@ -355,29 +358,6 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         brushColor.backgroundTintList = ColorStateList.valueOf(Color.parseColor(color))
     }
 
-    fun saveBitmapToGallery(context: Context, bitmap: Bitmap, title: String, description: String) {
-        // Get the directory for the user's public pictures directory.
-        val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-        val file = File(path, "$title.jpg")
-
-        try {
-            // Save the bitmap to the file
-            val stream: OutputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-            stream.close()
-
-            // Notify the media scanner
-            MediaScannerConnection.scanFile(
-                context,
-                arrayOf(file.toString()),
-                arrayOf("image/jpeg"),
-                null
-            )
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
     fun getCurrentDate(): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -386,35 +366,114 @@ class DrawingMemoEditActivity : AppCompatActivity() {
     }
 
     fun getCurrentDateTime(): String {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss", Locale.getDefault())
         val date = Date()
         return dateFormat.format(date)
     }
 
-    fun saveBitmapToCashe(bitmap: Bitmap, name : String, context: Context){
-        val storage: File = context.cacheDir
-        val fileName = "$name.jpg"
-        val tempFile = File(storage, fileName)
+    private fun saveMemoToInternalStorage() {
+        val memoModel = MemoModel(memo_title, getCurrentDateTime(), drawingView.getBitmapFromPaths())
+
+        // MemoModel을 내부 저장소에 저장합니다.
+        saveMemoModelToInternalStorage(memoModel)
+    }
+
+    private fun saveMemoModelToInternalStorage(memoModel: MemoModel) {
+        // Bitmap을 바이트 배열로 변환합니다.
+        val stream = ByteArrayOutputStream()
+        memoModel.thumbnail.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        val byteArray = stream.toByteArray()
+
         try {
-            // 자동으로 빈 파일을 생성합니다.
-            tempFile.createNewFile()
+            // MemoModel을 내부 저장소에 저장합니다.
+            val fileName = "${memoModel.title}_${memoModel.date}.png"
+            val outputStream: FileOutputStream = openFileOutput(fileName, Context.MODE_PRIVATE)
+            outputStream.write(byteArray)
+            outputStream.close()
 
-            // 파일을 쓸 수 있는 스트림을 준비합니다.
-            val out = FileOutputStream(tempFile)
+            Log.e("MemoModel", "MemoModel이 저장되었습니다: $fileName")
 
-            // compress 함수를 사용해 스트림에 비트맵을 저장합니다.
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-            Log.e("이미지저장됨", "이미지저장됨 : ${fileName}")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("MemoModel", "MemoModel 저장 중 오류 발생: ${e.message}")
+        }
+    }
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun saveImageOnAboveAndroidQ(bitmap: Bitmap) {
+        val fileName = System.currentTimeMillis().toString() + ".png" // 파일이름 현재시간.png
 
-            // 스트림 사용 후 닫아줍니다.
-            out.close()
+        /*
+        * ContentValues() 객체 생성.
+        * ContentValues는 ContentResolver가 처리할 수 있는 값을 저장해둘 목적으로 사용된다.
+        * */
+        val contentValues = ContentValues()
+        contentValues.apply {
+            put(MediaStore.Images.Media.RELATIVE_PATH, "DCIM/ImageSave") // 경로 설정
+            put(MediaStore.Images.Media.DISPLAY_NAME, fileName) // 파일이름을 put해준다.
+            put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+            put(MediaStore.Images.Media.IS_PENDING, 1) // 현재 is_pending 상태임을 만들어준다.
+            // 다른 곳에서 이 데이터를 요구하면 무시하라는 의미로, 해당 저장소를 독점할 수 있다.
+        }
 
-        } catch (e: FileNotFoundException) {
-            Log.e("MyTag", "FileNotFoundException : ${e.message}")
+        // 이미지를 저장할 uri를 미리 설정해놓는다.
+        val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+        try {
+            if(uri != null) {
+                val image = contentResolver.openFileDescriptor(uri, "w", null)
+                // write 모드로 file을 open한다.
+
+                if(image != null) {
+                    val fos = FileOutputStream(image.fileDescriptor)
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                    //비트맵을 FileOutputStream를 통해 compress한다.
+                    fos.close()
+
+                    contentValues.clear()
+                    contentValues.put(MediaStore.Images.Media.IS_PENDING, 0) // 저장소 독점을 해제한다.
+                    contentResolver.update(uri, contentValues, null, null)
+                }
+            }
+        } catch(e: FileNotFoundException) {
+            e.printStackTrace()
         } catch (e: IOException) {
-            Log.e("MyTag", "IOException : ${e.message}")
+            e.printStackTrace()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
+    private fun saveImageOnUnderAndroidQ(bitmap: Bitmap) {
+        val fileName = System.currentTimeMillis().toString() + ".png"
+        val externalStorage = Environment.getExternalStorageDirectory().absolutePath
+        val path = "$externalStorage/DCIM/imageSave"
+        val dir = File(path)
+
+        if(dir.exists().not()) {
+            dir.mkdirs() // 폴더 없을경우 폴더 생성
+        }
+
+        try {
+            val fileItem = File("$dir/$fileName")
+            fileItem.createNewFile()
+            //0KB 파일 생성.
+
+            val fos = FileOutputStream(fileItem) // 파일 아웃풋 스트림
+
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            //파일 아웃풋 스트림 객체를 통해서 Bitmap 압축.
+
+            fos.close() // 파일 아웃풋 스트림 객체 close
+
+            sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(fileItem)))
+            // 브로드캐스트 수신자에게 파일 미디어 스캔 액션 요청. 그리고 데이터로 추가된 파일에 Uri를 넘겨준다.
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
 }

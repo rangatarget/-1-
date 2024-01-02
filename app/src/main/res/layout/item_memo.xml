@@ -37,8 +37,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="3dp"
-        android:text="2023-12-30"
+        android:text="yyyy-MM-dd\nHH:mm:ss"
         android:textSize="14sp"
-        android:textColor="@android:color/darker_gray" />
+        android:gravity="center_horizontal"
+        android:textColor="@android:color/darker_gray"/>
 
 </LinearLayout>

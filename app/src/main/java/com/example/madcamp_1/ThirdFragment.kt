@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.madcamp_1.databinding.FragmentThirdBinding
@@ -26,6 +25,7 @@ class ThirdFragment : Fragment() {
 
     private var isFabOpen = false
     private lateinit var MainActivity : MainActivity
+    private val itemList : ArrayList<MemoModel> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,25 +71,8 @@ class ThirdFragment : Fragment() {
             activity?.finish()
             Log.d("test", "fabText 클릭됨")
         }
-        val itemList : ArrayList<MemoModel> = ArrayList()
 
-        val img = context?.let { loadBitmapFromInternalStorage(it, "${MainActivity.drawingMemoDate}.jpg") }
-
-        if (img==null){
-            Log.d("이미지 null 확인", "$img")
-        }
-
-        val memoTest = img?.let {
-            MemoModel(
-                title = MainActivity.drawingMemoTitle,
-                date = MainActivity.drawingMemoDate,
-                thumbnail = img
-            )
-        }
-
-        if (memoTest != null) {
-            itemList.add(memoTest)
-        }
+        loadAllMemoModels()
 
         val adapter = MyMemoAdapter(itemList)
         adapter.notifyDataSetChanged()
@@ -169,6 +152,37 @@ class ThirdFragment : Fragment() {
             }
         } else {
             null
+        }
+    }
+
+    private fun loadAllMemoModels() {
+        try {
+            // 내부 저장소에 저장된 파일 목록을 가져옵니다.
+            val fileList = requireContext().fileList()
+
+            // 파일 목록을 순회하며 MemoModel을 읽어옵니다.
+            for (fileName in fileList) {
+                if (fileName.endsWith(".png")) { // 이미지 파일인지 확인 (확장자가 .png인 경우)
+                    val inputStream: FileInputStream = requireContext().openFileInput(fileName)
+                    val byteArray = inputStream.readBytes()
+                    inputStream.close()
+
+                    // 파일 이름에서 MemoModel의 제목과 날짜를 추출합니다.
+                    val titleDateArray = fileName.split("_")
+                    val title = titleDateArray[0]
+                    val date = titleDateArray[1].removeSuffix(".png")
+
+                    // MemoModel을 생성하여 itemList에 추가합니다.
+                    val memoModel = MemoModel(title, date, BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size))
+                    itemList.add(memoModel)
+                }
+            }
+
+            Log.e("MemoModel", "모든 MemoModels를 내부 저장소에서 불러왔습니다.")
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("MemoModel", "MemoModels 불러오기 중 오류 발생: ${e.message}")
         }
     }
 

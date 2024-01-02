@@ -177,64 +177,41 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/eraserMenuCard"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="80dp"
             android:layout_above="@+id/drawingBottomMenu"
             app:cardCornerRadius="15dp"
             android:layout_margin="20dp"
             app:cardElevation="2dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <LinearLayout
                 android:id="@+id/eraserMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:elevation="4dp"
-                android:orientation="vertical">
-                <LinearLayout
-                    android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <androidx.appcompat.widget.AppCompatSeekBar
+                    android:id="@+id/eraserWidthSeekBar"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <androidx.appcompat.widget.AppCompatSeekBar
-                        android:id="@+id/eraserWidthSeekBar"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:max="100"
-                        android:min="1"
-                        android:progress="10"
-                        android:splitTrack="false"
-                        android:layout_marginLeft="14dp"
-                        android:layout_marginVertical="20dp"
-                        android:thumb="@drawable/seek_bar_thumb"
-                        android:progressDrawable="@drawable/seekbar"/>
-                    <TextView
-                        android:id="@+id/eraserSeekBarText"
-                        android:layout_width="30dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="15dp"
-                        android:text="10"
-                        android:gravity="center"
-                        android:textSize="14dp"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:paddingHorizontal="18dp"
-                    android:orientation="horizontal">
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginHorizontal="10dp"
-                        android:text="획 지우개"/>
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginHorizontal="8dp"
-                        android:text="영역 지우개"/>
-                </LinearLayout>
+                    android:max="100"
+                    android:min="1"
+                    android:progress="10"
+                    android:splitTrack="false"
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginVertical="20dp"
+                    android:thumb="@drawable/seek_bar_thumb"
+                    android:progressDrawable="@drawable/seekbar"/>
+                <TextView
+                    android:id="@+id/eraserSeekBarText"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="15dp"
+                    android:text="10"
+                    android:gravity="center"
+                    android:textSize="14dp"/>
 
             </LinearLayout>
 

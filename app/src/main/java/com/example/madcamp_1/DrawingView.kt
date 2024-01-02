@@ -120,6 +120,10 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         return coloredPaths
     }
 
+    fun setLastestColor(color: Int){
+        latestColor = color
+    }
+
     fun getBitmapFromPaths(): Bitmap {
         val tempBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val tempCanvas = Canvas(tempBitmap)
