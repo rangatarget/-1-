@@ -63,6 +63,7 @@ class FirstFragment : Fragment() {
             }
 
         }
+
         if (activity?.let { checkContactsPermission(it) } == true) {
             binding.appBarLayout.visibility = View.VISIBLE
             binding.btnGetContact.visibility = View.GONE
@@ -79,7 +80,6 @@ class FirstFragment : Fragment() {
             binding.rcvContact.adapter = adapter
             binding.rcvContact.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
         }
-
 
         val dividerItemDecoration = CustomDividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
         binding.rcvContact.addItemDecoration(dividerItemDecoration)
@@ -99,7 +99,6 @@ class FirstFragment : Fragment() {
             Log.d("test", "permission denied")
         }
     }
-
 
     private fun getContactDisplayName(context: Context, phoneNumber: String): String? =
         context.contentResolver.query(

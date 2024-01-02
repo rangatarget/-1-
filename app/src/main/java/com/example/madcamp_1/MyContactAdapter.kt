@@ -40,7 +40,6 @@ class MyContactAdapter(val itemList : ArrayList<ContactModel>) :
         return itemList.count()
     }
 
-
     inner class BoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name = itemView.findViewById<TextView>(R.id.contact_name)
         val number = itemView.findViewById<TextView>(R.id.contact_number)
@@ -62,7 +61,6 @@ class MyContactAdapter(val itemList : ArrayList<ContactModel>) :
             btnCall.setOnClickListener {
                 val phoneNumber = number.text.toString()
                 val dialIntent = Intent(Intent.ACTION_CALL, Uri.parse("tel:$phoneNumber"))
-
 
                 if (ActivityCompat.checkSelfPermission(
                         itemView.context,
