@@ -73,8 +73,6 @@ class ThirdFragment : Fragment() {
         }
         val itemList : ArrayList<MemoModel> = ArrayList()
 
-<<<<<<< HEAD
-=======
 
         val img = context?.let { loadBitmapFromInternalStorage(it, "${MainActivity.drawingMemoDate}.jpg") }
 
@@ -94,7 +92,6 @@ class ThirdFragment : Fragment() {
             itemList.add(memoTest)
         }
 
->>>>>>> main
         val adapter = MyMemoAdapter(itemList)
         adapter.notifyDataSetChanged()
         binding.rcvMemo.adapter = adapter
