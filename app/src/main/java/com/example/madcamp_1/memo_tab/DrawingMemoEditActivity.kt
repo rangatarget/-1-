@@ -71,18 +71,25 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             }
         }
 
-        drawingMemoTitle = intent.getStringExtra("drawing_memo_title").toString()
-        drawingMemoDate = intent.getStringExtra("drawing_memo_date").toString()
+        drawingMemoTitle = intent.getStringExtra("drawing_memo_title")
+        drawingMemoDate = intent.getStringExtra("drawing_memo_date")
 
+        val test = intent.getStringExtra("text").toString()
+
+        Log.d("키 잘 들어왔나", "$test")
+
+        Log.d("textMemoTitle", "$drawingMemoTitle")
+        Log.d("textMemoDate", "$drawingMemoDate")
         if (drawingMemoTitle!=null&&drawingMemoDate!=null){
             binding.drawingBg.setImageBitmap(loadMemoModelFromInternalStorage(drawingMemoTitle!!,
                 drawingMemoDate!!
             ))
+            Log.d("??", "왜 여기로 오는거야")
+            memo_title = drawingMemoTitle as String
             binding.titleEdit.hint = drawingMemoTitle
         } else {
             memo_title = "(제목 없음)"
         }
-
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = ""

@@ -2,6 +2,7 @@ package com.example.madcamp_1.memo_tab
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.madcamp_1.MainActivity
+import com.example.madcamp_1.MyApplication
 import com.example.madcamp_1.R
 
 class MyMemoAdapter (val itemList : ArrayList<MemoModel>, val activity: MainActivity) :
@@ -39,13 +41,32 @@ class MyMemoAdapter (val itemList : ArrayList<MemoModel>, val activity: MainActi
         val date: TextView = itemView.findViewById(R.id.tvDate)
         val img : ImageView = itemView.findViewById(R.id.thumbnail)
 
+        var isText : Boolean = false
+        lateinit var content : String
+
         init {
             itemView.setOnClickListener {
-                val intent = Intent(itemView.context, DrawingMemoShowActivity::class.java)
-                intent.putExtra("drawing_memo_title", itemList[position].title)
-                intent.putExtra("drawing_memo_date", itemList[position].date)
-                activity.finish()
-                itemView.context.startActivity(intent)
+
+                isText = MyApplication.prefs.findText("${itemList[position].title}_${itemList[position].date}")
+                content = MyApplication.prefs.getString("${itemList[position].title}_${itemList[position].date}", "default")
+                Log.d("test 어댑터에서 찾는 키", "${itemList[position].title}_${itemList[position].date}")
+                Log.d("isText 확인", "$isText")
+                Log.d("meme content 확인", "$content")
+
+                if (isText){
+                    val intent = Intent(itemView.context, TextMemoShowActivity::class.java)
+                    intent.putExtra("text_memo_title", itemList[position].title)
+                    intent.putExtra("text_memo_date", itemList[position].date)
+                    intent.putExtra("text_memo_content", content)
+                    activity.finish()
+                    itemView.context.startActivity(intent)
+                } else {
+                    val intent = Intent(itemView.context, DrawingMemoShowActivity::class.java)
+                    intent.putExtra("drawing_memo_title", itemList[position].title)
+                    intent.putExtra("drawing_memo_date", itemList[position].date)
+                    activity.finish()
+                    itemView.context.startActivity(intent)
+                }
             }
         }
     }

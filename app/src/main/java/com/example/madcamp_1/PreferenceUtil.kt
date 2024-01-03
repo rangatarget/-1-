@@ -13,4 +13,13 @@ class PreferenceUtil(context: Context) {
     fun setString(key: String, str: String){
         prefs.edit().putString(key, str).apply()
     }
+
+    fun putString(key: String, str: String){
+        prefs.edit().putString(key, str).apply()
+    }
+
+    fun findText(key: String):Boolean {
+        return prefs.contains(key)
+    }
+
 }

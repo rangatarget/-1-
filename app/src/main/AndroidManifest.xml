@@ -27,6 +27,9 @@
         android:theme="@style/Theme.Madcamp_1"
         tools:targetApi="31">
         <activity
+            android:name=".memo_tab.TextMemoShowActivity"
+            android:exported="false" />
+        <activity
             android:name=".memo_tab.DrawingMemoShowActivity"
             android:exported="false" />
         <activity
