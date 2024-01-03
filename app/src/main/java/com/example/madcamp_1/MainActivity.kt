@@ -35,17 +35,6 @@ class MainActivity : AppCompatActivity() {
             setFragment(ThirdFragment())
             binding.bottomNavigationview.selectedItemId = R.id.memo
         }
-        //2번째 탭 이동
-        else if(fragmentToShow == "fragment_second"){
-            Log.v("뒤로가기 또는 삭제 누름", "")
-            val intent = intent
-            val deleted = intent.getStringExtra("deleted")
-            val fragment = deleted?.let { SecondFragment().newInstance(it) }
-            if (fragment != null) {
-                setFragment(fragment)
-            }
-            binding.bottomNavigationview.selectedItemId = R.id.gallery
-        }
         else {
             // 특정 프래그먼트 요청이 없으면 기본 프래그먼트 설정
             setFragment(FirstFragment())
@@ -67,6 +56,7 @@ class MainActivity : AppCompatActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.gallery -> {
+                    Log.v("프래그먼트 변경", "갤러리 탭 누름")
                     if(secondFragment==null){
                         secondFragment = SecondFragment()
                         supportFragmentManager.beginTransaction()
