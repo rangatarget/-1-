@@ -163,6 +163,7 @@ class DrawingMemoShowActivity : AppCompatActivity() {
             Log.e("MemoModel", "MemoModel 삭제 중 오류 발생: ${e.message}")
         }
     }
+
     override fun onBackPressed() {
         super.onBackPressed()
         val intent = Intent(this, MainActivity::class.java)

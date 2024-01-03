@@ -71,20 +71,33 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             }
         }
 
-        drawingMemoTitle = intent.getStringExtra("drawing_memo_title").toString()
-        drawingMemoDate = intent.getStringExtra("drawing_memo_date").toString()
+        drawingMemoTitle = intent.getStringExtra("drawing_memo_title")
+        drawingMemoDate = intent.getStringExtra("drawing_memo_date")
 
+        val test = intent.getStringExtra("text").toString()
+
+        Log.d("키 잘 들어왔나", "$test")
+
+        Log.d("textMemoTitle", "$drawingMemoTitle")
+        Log.d("textMemoDate", "$drawingMemoDate")
         if (drawingMemoTitle!=null&&drawingMemoDate!=null){
             binding.drawingBg.setImageBitmap(loadMemoModelFromInternalStorage(drawingMemoTitle!!,
                 drawingMemoDate!!
             ))
+            Log.d("??", "왜 여기로 오는거야")
+            memo_title = drawingMemoTitle as String
+            binding.titleEdit.hint = drawingMemoTitle
+        } else {
+            memo_title = "(제목 없음)"
         }
-
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = ""
 
         binding.backButton.setOnClickListener {
+            if (drawingMemoTitle!=null&&drawingMemoDate!=null) {
+                deleteMemoModelFromInternalStorage(drawingMemoTitle!!, drawingMemoDate!!)
+            }
             val bitmap = combineViewsToBitmap(container)
             saveMemoToInternalStorage(bitmap)
             val intent = Intent(this, MainActivity::class.java)
@@ -330,7 +343,6 @@ class DrawingMemoEditActivity : AppCompatActivity() {
 
     }
 
-
     override fun onBackPressed() {
         val titleEditText = findViewById<EditText>(R.id.title_edit)
         // EditText가 포커스 상태인지 확인하고 포커스가 있을 때만 clearFocus() 호출
@@ -338,6 +350,11 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             titleEditText.clearFocus()
         } else {
             super.onBackPressed()
+
+            if (drawingMemoTitle!=null&&drawingMemoDate!=null) {
+                deleteMemoModelFromInternalStorage(drawingMemoTitle!!, drawingMemoDate!!)
+            }
+
             val bitmap = combineViewsToBitmap(container)
             saveMemoToInternalStorage(bitmap)
             val intent = Intent(this, MainActivity::class.java)
@@ -539,5 +556,24 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         return bitmap
     }
 
+    private fun deleteMemoModelFromInternalStorage(title: String, date: String) {
+        try {
+            // Generate the file name based on title and date
+            val fileName = "${title}_${date}.png"
+
+            // Delete the file from internal storage
+            val file = File(filesDir, fileName)
+            if (file.exists()) {
+                file.delete()
+                Log.e("MemoModel", "MemoModel이 삭제되었습니다: $fileName")
+            } else {
+                Log.e("MemoModel", "MemoModel 파일이 존재하지 않습니다: $fileName")
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("MemoModel", "MemoModel 삭제 중 오류 발생: ${e.message}")
+        }
+    }
 
 }

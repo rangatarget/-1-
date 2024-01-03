@@ -73,7 +73,13 @@ class ThirdFragment : Fragment() {
             Log.d("test", "fabText 클릭됨")
         }
 
-        loadAllMemoModels()
+        val isMemoEmpty = loadAllMemoModels()
+
+        if (isMemoEmpty==0){
+            binding.emptyMSG.visibility = View.VISIBLE
+        } else {
+            binding.emptyMSG.visibility = View.GONE
+        }
 
         val adapter = MyMemoAdapter(sortMemoModelsByDateDescending(itemList), activity as MainActivity)
         adapter.notifyDataSetChanged()
@@ -90,7 +96,6 @@ class ThirdFragment : Fragment() {
         if (isFabOpen) {
             ObjectAnimator.ofFloat(fabDrawing, "translationY", 0f).apply { start() }
             ObjectAnimator.ofFloat(fabText, "translationY", 0f).apply { start() }
-            Log.d("test", "닫기")
             ObjectAnimator.ofPropertyValuesHolder(
                 fabDrawing,
                 PropertyValuesHolder.ofFloat("scaleX", targetScaleClosed),
@@ -129,7 +134,7 @@ class ThirdFragment : Fragment() {
     }
 
 
-    private fun loadAllMemoModels() {
+    private fun loadAllMemoModels(): Int {
         try {
             // 내부 저장소에 저장된 파일 목록을 가져옵니다.
             val fileList = requireContext().fileList()
@@ -154,11 +159,19 @@ class ThirdFragment : Fragment() {
 
             Log.e("MemoModel", "모든 MemoModels를 내부 저장소에서 불러왔습니다.")
 
+            // MemoModel이 하나 이상 있는 경우 1을 반환
+            return if (itemList.isNotEmpty()) 1 else 0
+
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e("MemoModel", "MemoModels 불러오기 중 오류 발생: ${e.message}")
+
+            // 오류 발생 시 0을 반환
+            return 0
         }
     }
+
+
     fun sortMemoModelsByDateDescending(memoModels: ArrayList<MemoModel>): ArrayList<MemoModel> {
         return ArrayList(memoModels.sortedByDescending { it.date })
     }

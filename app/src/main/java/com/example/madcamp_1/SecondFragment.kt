@@ -58,6 +58,13 @@ class SecondFragment : Fragment() {
 
         val binding = FragmentSecondBinding.inflate(inflater, container, false)
 
+        binding.button21.scaleX = 0.3f
+        binding.button21.scaleY = 0.3f
+
+        binding.button22.scaleX = 0.3f
+        binding.button22.scaleY = 0.3f
+
+
         //톱니바퀴버튼
         binding.button2.setOnClickListener {
             if (isFabOpen) {
@@ -220,6 +227,7 @@ class SecondFragment : Fragment() {
         startActivityForResult(takePictureIntent, 2001)
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.v("onActivityResult", "image_len: " + image_len.toString())
