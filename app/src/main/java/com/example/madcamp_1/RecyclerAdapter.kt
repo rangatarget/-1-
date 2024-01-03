@@ -3,6 +3,7 @@ package com.example.madcamp_1
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -31,13 +32,33 @@ class RecyclerAdapter(val context: Context, val itemList: ArrayList<ImageModel>)
         val img = itemView.findViewById<ImageView>(R.id.imageView)
 
         fun bind(item: ImageModel){
-            img.setImageBitmap(item.bitmap)
+            val small_bitmap = resizeBitmapWithAspectRatio(item.bitmap, 1000, 1000)
+            img.setImageBitmap(small_bitmap)
             itemView.setOnClickListener{
                 val intent = Intent(context, ImageFullScreen::class.java)
                 intent.putExtra("image_index", item.index.toString())
                 itemView.context.startActivity(intent)
             }
         }
+    }
+
+    private fun resizeBitmapWithAspectRatio(originalBitmap: Bitmap, maxWidth: Int, maxHeight: Int): Bitmap {
+        val width = originalBitmap.width
+        val height = originalBitmap.height
+
+        val ratioBitmap = width.toFloat() / height.toFloat()
+        val ratioMax = maxWidth.toFloat() / maxHeight.toFloat()
+
+        var finalWidth = maxWidth
+        var finalHeight = maxHeight
+
+        if (ratioMax > ratioBitmap) {
+            finalWidth = (maxHeight.toFloat() * ratioBitmap).toInt()
+        } else {
+            finalHeight = (maxWidth.toFloat() / ratioBitmap).toInt()
+        }
+
+        return Bitmap.createScaledBitmap(originalBitmap, finalWidth, finalHeight, false)
     }
 
 }
