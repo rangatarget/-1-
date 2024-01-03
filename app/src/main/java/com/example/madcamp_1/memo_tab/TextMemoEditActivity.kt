@@ -59,7 +59,6 @@ class TextMemoEditActivity : AppCompatActivity() {
         Log.d("textMemoDate", "$textMemoDate")
 
         if (textMemoTitle!=null&&textMemoDate!=null){
-            Log.d("??", "왜 여기로 오는거야")
             val content = MyApplication.prefs.getString("${textMemoTitle}_${textMemoDate}", "default")
             binding.memoContent.text = Editable.Factory.getInstance().newEditable(content)
             memo_title = textMemoTitle as String

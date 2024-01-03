@@ -77,15 +77,12 @@ class DrawingMemoEditActivity : AppCompatActivity() {
 
         val test = intent.getStringExtra("text").toString()
 
-        Log.d("키 잘 들어왔나", "$test")
-
         Log.d("textMemoTitle", "$drawingMemoTitle")
         Log.d("textMemoDate", "$drawingMemoDate")
         if (drawingMemoTitle!=null&&drawingMemoDate!=null){
             binding.drawingBg.setImageBitmap(loadMemoModelFromInternalStorage(drawingMemoTitle!!,
                 drawingMemoDate!!
             ))
-            Log.d("??", "왜 여기로 오는거야")
             memo_title = drawingMemoTitle as String
             binding.titleEdit.text = Editable.Factory.getInstance().newEditable(drawingMemoTitle)
 
