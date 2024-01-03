@@ -19,6 +19,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -30,6 +32,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -116,6 +119,7 @@ class SecondFragment : Fragment() {
 
     }
 
+    @SuppressLint("WrongThread")
     override fun onResume(){
         super.onResume()
         Log.v("onResume 실행", image_len.toString())
@@ -141,6 +145,25 @@ class SecondFragment : Fragment() {
                 loadBitmap(i)
             }
         }
+        //회전시킨 경우
+        val rotated = MyApplication.prefs.getString("rotated", "")
+        if(rotated != "") {
+            MyApplication.prefs.setString("rotated", "")
+            val rotated_index = Integer.parseInt(rotated)
+            val bitmap_old = imagelist[rotated_index].bitmap
+            val rotated_num = MyApplication.prefs.getString("rotated_num", "0")
+            val angle = (90 * (Integer.parseInt(rotated_num))%360)
+            Log.v("rotated", angle.toString())
+            val matrix = Matrix()
+            matrix.postRotate(angle.toFloat())
+            val bitmap_new = Bitmap.createBitmap(bitmap_old, 0, 0, bitmap_old.width, bitmap_old.height, matrix, true)
+            imagelist[rotated_index].bitmap = bitmap_new
+            val outputStream: FileOutputStream = requireContext().openFileOutput("gallery_image_" + rotated_index.toString() + ".jpg", Context.MODE_PRIVATE)
+            bitmap_new.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+        }
+
         //rcvgallery 업데이트
         val rcvgallery = activity?.findViewById<RecyclerView>(R.id.rcvGallery)
         val adapter = context?.let { RecyclerAdapter(it, imagelist) }
@@ -215,7 +238,7 @@ class SecondFragment : Fragment() {
                 2001 -> { //camera
                     if( photoURI != null)
                     {
-                        val bitmap = context?.let { saveCameraToFile(it, photoURI!!, "gallery_image_" + image_len.toString() + ".jpg") }
+                        context?.let { saveCameraToFile(it, photoURI!!, "gallery_image_" + image_len.toString() + ".jpg") }
                         photoURI = null
                     }
                     image_len = image_len + 1
@@ -240,11 +263,9 @@ class SecondFragment : Fragment() {
     }
     private fun saveGalleryToFile(context: Context, uri: String, filename: String) {
         val inputStream: InputStream? = context.contentResolver.openInputStream(Uri.parse(uri))
-
         if (inputStream != null) {
             // 비트맵으로 변환
             val bitmap = BitmapFactory.decodeStream(inputStream)
-
             // 비트맵을 파일로 저장
             val outputStream: FileOutputStream = context.openFileOutput(filename, Context.MODE_PRIVATE)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
@@ -301,9 +322,34 @@ class SecondFragment : Fragment() {
         return context?.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
     }
 
-    private fun dispatchTakePictureIntentEx()
-    {
+    fun rotateBitmap(photoPath: String): Bitmap? {
+        try {
+            val exif = ExifInterface(photoPath)
+            val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
 
+            val rotationAngle = when (orientation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> 90
+                ExifInterface.ORIENTATION_ROTATE_180 -> 180
+                ExifInterface.ORIENTATION_ROTATE_270 -> 270
+                else -> 0
+            }
+
+            val options = BitmapFactory.Options()
+            options.inSampleSize = 2  // 이미지 크기를 조절할 수 있음
+
+            val originalBitmap = BitmapFactory.decodeFile(photoPath, options)
+
+            return if (rotationAngle != 0) {
+                val matrix = android.graphics.Matrix()
+                matrix.postRotate(rotationAngle.toFloat())
+                Bitmap.createBitmap(originalBitmap, 0, 0, originalBitmap.width, originalBitmap.height, matrix, true)
+            } else {
+                originalBitmap
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return null
+        }
     }
 
 }

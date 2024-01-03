@@ -29,6 +29,17 @@
         app:srcCompat="@drawable/delete"
         app:backgroundTint="@color/colorAccent" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/rotate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="190dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/rotate"
+        app:backgroundTint="@color/colorAccent" />
+
     <ImageView
         android:id="@+id/fullscreen"
         android:layout_width="match_parent"

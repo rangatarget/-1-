@@ -4,6 +4,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 
 class ImageModel(
-    val index: Int,
-    val bitmap: Bitmap
+    var index: Int,
+    var bitmap: Bitmap
 )
