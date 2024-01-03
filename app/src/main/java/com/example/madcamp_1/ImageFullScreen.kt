@@ -1,14 +1,11 @@
 package com.example.madcamp_1
 
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.madcamp_1.databinding.ActivityDrawingMemoEditBinding
 import com.example.madcamp_1.databinding.ActivityImageFullScreenBinding
-import com.example.madcamp_1.databinding.FragmentSecondBinding
 import java.io.File
 
 class ImageFullScreen : AppCompatActivity() {

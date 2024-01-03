@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.madcamp_1.databinding.FragmentSecondBinding
@@ -23,7 +22,6 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.TextView
@@ -105,7 +103,6 @@ class SecondFragment : Fragment() {
 
         //카메라버튼
         binding.button22.setOnClickListener {
-            Toast.makeText(context, "카메라 버튼 클릭", Toast.LENGTH_SHORT).show()
             requestPermission_Camera()
         }
 
