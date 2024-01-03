@@ -1,4 +1,4 @@
-package com.example.madcamp_1
+package com.example.madcamp_1.memo_tab
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
@@ -17,8 +17,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
@@ -27,6 +25,8 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import com.example.madcamp_1.MainActivity
+import com.example.madcamp_1.R
 import com.example.madcamp_1.databinding.ActivityDrawingMemoEditBinding
 import yuku.ambilwarna.AmbilWarnaDialog
 import java.io.ByteArrayOutputStream

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DrawingMemoEditActivity"
+    tools:context=".memo_tab.DrawingMemoEditActivity"
     android:background="#FFFFFF"
     android:orientation="vertical">
 
@@ -42,7 +42,7 @@
             android:layout_weight="1"
             android:id="@+id/containers">
 
-            <com.example.madcamp_1.DrawingView
+            <com.example.madcamp_1.memo_tab.DrawingView
                 android:id="@+id/drawingView"
                 android:layout_width="match_parent"
                 android:layout_height="613dp" />

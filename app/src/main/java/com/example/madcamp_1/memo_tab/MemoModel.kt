@@ -1,4 +1,4 @@
-package com.example.madcamp_1
+package com.example.madcamp_1.memo_tab
 
 import android.graphics.Bitmap
 

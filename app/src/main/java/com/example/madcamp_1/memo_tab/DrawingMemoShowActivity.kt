@@ -1,4 +1,4 @@
-package com.example.madcamp_1
+package com.example.madcamp_1.memo_tab
 
 import android.content.ContentValues
 import android.content.Intent
@@ -21,6 +21,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import com.example.madcamp_1.MainActivity
+import com.example.madcamp_1.R
 import com.example.madcamp_1.databinding.ActivityDrawingMemoShowBinding
 import java.io.File
 import java.io.FileInputStream

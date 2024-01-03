@@ -1,32 +1,27 @@
-package com.example.madcamp_1
+package com.example.madcamp_1.memo_tab
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.os.AsyncTask
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import java.io.File
-import java.io.FileInputStream
-import java.io.IOException
-import java.lang.ref.WeakReference
+import com.example.madcamp_1.MainActivity
+import com.example.madcamp_1.R
 
 class MyMemoAdapter (val itemList : ArrayList<MemoModel>, val activity: MainActivity) :
     RecyclerView.Adapter<MyMemoAdapter.ViewHolder>(){
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): MyMemoAdapter.ViewHolder {
+    ): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_memo, parent, false)
         return ViewHolder(view, itemList, activity)
     }
 
-    override fun onBindViewHolder(holder: MyMemoAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.title.text = itemList[position].title
         holder.date.text = itemList[position].date
 

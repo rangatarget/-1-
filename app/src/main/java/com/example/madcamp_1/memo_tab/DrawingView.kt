@@ -1,14 +1,11 @@
-package com.example.madcamp_1
+package com.example.madcamp_1.memo_tab
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Button
-import kotlin.properties.Delegates
 
 class ColoredPath(val path: Path, var color: Int, var strokeWidth: Float)
 
