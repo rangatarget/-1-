@@ -122,6 +122,7 @@ class SecondFragment : Fragment() {
 
     override fun onStart(){
         super.onStart()
+        image_len = Integer.parseInt(MyApplication.prefs.getString("image_len", "0"))
         Log.v("onStart 실행", image_len.toString())
 
     }
@@ -138,6 +139,7 @@ class SecondFragment : Fragment() {
         isDeleted(deleted)
         //삭제하고 온 경우
         if(deleted != "") {
+            MyApplication.prefs.setString("deleted", "")
             val deleted_index = Integer.parseInt(deleted)
             for (i: Int in deleted_index ..image_len) {
                 imagelist.removeLast()
