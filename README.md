@@ -51,3 +51,5 @@ redo 버튼을 터치하면 취소한 획을 다시 불러올 수 있습니다.
 메모 삭제하기: 메모를 삭제할 수 있습니다.
 메모 수정하기: 메모를 수정할 수 있습니다. 이 메뉴를 선택하면 메모 수정 화면으로 넘어갑니다.
 이미지 저장하기: 드로잉 메모에만 존재하는 메뉴입니다. 메모를 이미지로 저장할 수 있습니다.
+# D. apk
+https://drive.google.com/file/d/1AYA_7Ox2L66UQcFwe1fynjmXpobN7AwA/view?usp=sharing(https://drive.google.com/file/d/1AYA_7Ox2L66UQcFwe1fynjmXpobN7AwA/view?usp=sharing)
