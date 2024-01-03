@@ -90,6 +90,9 @@ class SecondFragment : Fragment() {
     override fun onResume(){
         super.onResume()
         Log.v("onResume 실행", image_len.toString())
+        //image_len 불러오기
+        image_len = Integer.parseInt(MyApplication.prefs.getString("image_len", "0"))
+
         //deleted 여부 확인
         val deleted = MyApplication.prefs.getString("deleted", "")
         isDeleted(deleted)
