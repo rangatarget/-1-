@@ -99,6 +99,7 @@ class TextMemoEditActivity : AppCompatActivity() {
                 if (textMemoTitle!=null&&textMemoDate!=null){
                     deleteMemoModelFromInternalStorage(textMemoTitle!!, textMemoDate!!)
                 }
+                saveMemo = memoContent.text.toString()
 
                 val date = getCurrentDateTime()
                 MyApplication.prefs.putString("${memo_title}_$date", saveMemo)
