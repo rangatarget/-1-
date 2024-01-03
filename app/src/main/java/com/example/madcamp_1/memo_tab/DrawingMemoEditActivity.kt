@@ -79,6 +79,8 @@ class DrawingMemoEditActivity : AppCompatActivity() {
                 drawingMemoDate!!
             ))
             binding.titleEdit.hint = drawingMemoTitle
+        } else {
+            memo_title = "(제목 없음)"
         }
 
 
