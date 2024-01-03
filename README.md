@@ -11,8 +11,8 @@
 ### 프로젝트 이름 : 연.갤.메
 "연.갤.메'는 연락처, 갤러리, 메모장의 약자입니다. "연.갤.메"는 이 3가지 기능을 지원하며 각 기능은 탭 단위로 구성되어 있습니다. 
 ## Tab1 : 연락처
-![KakaoTalk_20240103_204020723_04](https://github.com/rangatarget/madcamp_1/assets/110696075/62b98f63-c0be-4d59-bc4a-dd6f90fa4a9b)
-![KakaoTalk_20240103_201413388](https://github.com/rangatarget/madcamp_1/assets/110696075/9cfd9e30-95ca-4fe7-9871-19ae815a005f)
+<img src="https://github.com/rangatarget/madcamp_1/assets/110696075/62b98f63-c0be-4d59-bc4a-dd6f90fa4a9b"  width="200" height="400"/>
+<img src="https://github.com/rangatarget/madcamp_1/assets/110696075/9cfd9e30-95ca-4fe7-9871-19ae815a005f"  width="200" height="400"/>
 
 연락처 불러오기 버튼을 터치하면 연락처 권한을 허용한 후, 기기로부터 연락처를 불러옵니다.
 각 연락처의 영역을 터치하면 연락처 하단에 전화하기, 문자하기 버튼이 생겨납니다.
@@ -20,14 +20,14 @@
 문자하기 버튼을 누르면 해당 번호로 문자를 보내는 화면으로 연결됩니다.
 
 ## Tab2 : 갤러리
-![KakaoTalk_20240103_204020723_03](https://github.com/rangatarget/madcamp_1/assets/110696075/c68fc80d-2111-4ca7-9197-4573422fad42)
+<img src="https://github.com/rangatarget/madcamp_1/assets/110696075/c68fc80d-2111-4ca7-9197-4573422fad42"  width="200" height="400"/>
 
 갤러리는 기본적으로 가로 3칸의 격자로 구성되어 있습니다. 격자는 아래로 스크롤하여 내릴 수 있습니다. "카메라로 추가하기", "갤러리에서 추가하기" 버튼을 각각 처음 누르면 권한을 요구하는 창이 뜹니다. 권한을 허용하면 사진을 추가할 수 있습니다. 추가한 사진은 격자의 마지막 위치에 배치됩니다. 사진을 클릭하면 큰 화면에서 볼 수 있고, 뒤로가기, 삭제, 회전 버튼이 나타납니다. 뒤로가기 버튼을 누르면 격자화면으로 돌아갑니다. 삭제 버튼을 누르면 해당 사진이 삭제되고 격자 화면으로 돌아갑니다. 회전 버튼을 누를때마다 사진이 오른쪽으로 90도씩 회전합니다. 회전한 상태에서 뒤로가기 버튼을 누르면 그 상태로 사진이 편집되어 저장됩니다.
 
 ## Tab3 : 메모장
-![KakaoTalk_20240103_204020723](https://github.com/rangatarget/madcamp_1/assets/110696075/c8e6f616-d1f2-4108-b0f3-16899c82a9ad)
-![KakaoTalk_20240103_204020723_01](https://github.com/rangatarget/madcamp_1/assets/110696075/d80a6221-be91-495b-ab1a-613445f54319)
-![KakaoTalk_20240103_204020723_02](https://github.com/rangatarget/madcamp_1/assets/110696075/44e59a76-a696-4fa9-8b11-fac228a4daf9)
+<img src="https://github.com/rangatarget/madcamp_1/assets/110696075/c8e6f616-d1f2-4108-b0f3-16899c82a9ad"  width="200" height="400"/>
+<img src="https://github.com/rangatarget/madcamp_1/assets/110696075/d80a6221-be91-495b-ab1a-613445f54319"  width="200" height="400"/>
+<img src="https://github.com/rangatarget/madcamp_1/assets/110696075/44e59a76-a696-4fa9-8b11-fac228a4daf9"  width="200" height="400"/>
 
 
 우측 하단의 플로팅 버튼을 누르면 텍스트 메모 추가 버튼, 드로잉 메모 추가 버튼이 올라옵니다. 두 가지의 메모 중 무엇을 추가할 지 선택할 수 있습니다.
