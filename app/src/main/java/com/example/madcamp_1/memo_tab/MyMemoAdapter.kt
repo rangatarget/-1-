@@ -26,7 +26,6 @@ class MyMemoAdapter (val itemList : ArrayList<MemoModel>, val activity: MainActi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.title.text = itemList[position].title
         holder.date.text = itemList[position].date
-
         val resizedBitmap = resizeBitmapWithAspectRatio(itemList[position].thumbnail, 400, 400)
         holder.img.setImageBitmap(resizedBitmap)
 
@@ -89,6 +88,4 @@ class MyMemoAdapter (val itemList : ArrayList<MemoModel>, val activity: MainActi
 
         return Bitmap.createScaledBitmap(originalBitmap, finalWidth, finalHeight, false)
     }
-
-
 }
