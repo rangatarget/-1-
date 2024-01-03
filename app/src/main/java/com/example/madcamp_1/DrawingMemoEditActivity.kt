@@ -9,6 +9,7 @@ import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.MediaScannerConnection
+import android.os.AsyncTask
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -25,8 +26,14 @@ import androidx.core.app.ActivityCompat
 import com.example.madcamp_1.databinding.ActivityDrawingMemoEditBinding
 import yuku.ambilwarna.AmbilWarnaDialog
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.OutputStream
+import java.lang.ref.WeakReference
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class DrawingMemoEditActivity : AppCompatActivity() {
@@ -35,10 +42,14 @@ class DrawingMemoEditActivity : AppCompatActivity() {
     private var isEraserMenuOn = false
     lateinit var drawingView: DrawingView
 
+    lateinit var memo_title : String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val binding = ActivityDrawingMemoEditBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        memo_title = binding.titleEdit.text.toString()
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = ""
@@ -304,8 +315,12 @@ class DrawingMemoEditActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
+        saveBitmapToCashe(drawingView.getBitmapFromPaths(), getCurrentDateTime(), this)
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_THIRD)
+        intent.putExtra("drawing_memo_title", memo_title)
+        intent.putExtra("drawing_memo_date", getCurrentDateTime())
+
         startActivity(intent)
         finish()
     }
@@ -362,6 +377,43 @@ class DrawingMemoEditActivity : AppCompatActivity() {
 
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    fun getCurrentDate(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = Date()
+        return dateFormat.format(date)
+    }
+
+    fun getCurrentDateTime(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val date = Date()
+        return dateFormat.format(date)
+    }
+
+    fun saveBitmapToCashe(bitmap: Bitmap, name : String, context: Context){
+        val storage: File = context.cacheDir
+        val fileName = "$name.jpg"
+        val tempFile = File(storage, fileName)
+        try {
+            // 자동으로 빈 파일을 생성합니다.
+            tempFile.createNewFile()
+
+            // 파일을 쓸 수 있는 스트림을 준비합니다.
+            val out = FileOutputStream(tempFile)
+
+            // compress 함수를 사용해 스트림에 비트맵을 저장합니다.
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            Log.e("이미지저장됨", "이미지저장됨 : ${fileName}")
+
+            // 스트림 사용 후 닫아줍니다.
+            out.close()
+
+        } catch (e: FileNotFoundException) {
+            Log.e("MyTag", "FileNotFoundException : ${e.message}")
+        } catch (e: IOException) {
+            Log.e("MyTag", "IOException : ${e.message}")
         }
     }
 

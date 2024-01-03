@@ -2,7 +2,10 @@ package com.example.madcamp_1
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,15 +16,28 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.madcamp_1.databinding.FragmentThirdBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
 import java.util.Calendar
 
 
 class ThirdFragment : Fragment() {
 
     private var isFabOpen = false
+    private lateinit var MainActivity : MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // 액티비티의 참조를 얻기
+        if (context is MainActivity) {
+            MainActivity = context
+        }
     }
 
     override fun onCreateView(
@@ -57,6 +73,27 @@ class ThirdFragment : Fragment() {
         }
         val itemList : ArrayList<MemoModel> = ArrayList()
 
+<<<<<<< HEAD
+=======
+        val img = context?.let { loadBitmapFromInternalStorage(it, "${MainActivity.drawingMemoDate}.jpg") }
+
+        if (img==null){
+            Log.d("이미지 null 확인", "$img")
+        }
+
+        val memoTest = img?.let {
+            MemoModel(
+                title = MainActivity.drawingMemoTitle,
+                date = MainActivity.drawingMemoDate,
+                thumbnail = img
+            )
+        }
+
+        if (memoTest != null) {
+            itemList.add(memoTest)
+        }
+
+>>>>>>> main
         val adapter = MyMemoAdapter(itemList)
         adapter.notifyDataSetChanged()
         binding.rcvMemo.adapter = adapter
@@ -119,4 +156,23 @@ class ThirdFragment : Fragment() {
         calendar.set(year, month, day)
         return "${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH)}-${calendar.get(Calendar.DAY_OF_MONTH)}"
     }
+
+    fun loadBitmapFromInternalStorage(context: Context, fileName: String): Bitmap? {
+        val file = File(context.cacheDir, fileName)
+
+        return if (file.exists()) {
+            try {
+                val fileInputStream = FileInputStream(file)
+                val bitmap = BitmapFactory.decodeStream(fileInputStream)
+                fileInputStream.close()
+                bitmap
+            } catch (e: IOException) {
+                e.printStackTrace()
+                null
+            }
+        } else {
+            null
+        }
+    }
+
 }
