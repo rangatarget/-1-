@@ -7,6 +7,10 @@
         android:id="@+id/menu_save"
         android:title="이미지 저장하기" />
     <item
+        android:id="@+id/menu_edit"
+        android:title="메모 수정하기" />
+    <item
         android:id="@+id/menu_delete"
         android:title="메모 삭제하기" />
+
 </menu>

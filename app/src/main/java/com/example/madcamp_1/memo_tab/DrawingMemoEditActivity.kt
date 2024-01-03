@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -21,6 +22,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -47,6 +49,10 @@ class DrawingMemoEditActivity : AppCompatActivity() {
     lateinit var drawingView: DrawingView
 
     lateinit var memo_title : String
+    var drawingMemoTitle : String? = null
+    var drawingMemoDate: String? = null
+
+    lateinit var container : FrameLayout
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +60,8 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         drawingView = binding.drawingView
+
+        container = binding.containers
 
         memo_title = "(제목 없음)"
 
@@ -63,11 +71,22 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             }
         }
 
+        drawingMemoTitle = intent.getStringExtra("drawing_memo_title").toString()
+        drawingMemoDate = intent.getStringExtra("drawing_memo_date").toString()
+
+        if (drawingMemoTitle!=null&&drawingMemoDate!=null){
+            binding.drawingBg.setImageBitmap(loadMemoModelFromInternalStorage(drawingMemoTitle!!,
+                drawingMemoDate!!
+            ))
+        }
+
+
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = ""
 
         binding.backButton.setOnClickListener {
-            saveMemoToInternalStorage()
+            val bitmap = combineViewsToBitmap(container)
+            saveMemoToInternalStorage(bitmap)
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_THIRD)
             intent.putExtra("drawing_memo_title", memo_title)
@@ -284,16 +303,18 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         }
 
         btnSaveImg.setOnClickListener {
+            val bitmap = combineViewsToBitmap(container)
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 //Q 버전 이상일 경우. (안드로이드 10, API 29 이상일 경우)
-                saveImageOnAboveAndroidQ(drawingView.getBitmapFromPaths())
+                saveImageOnAboveAndroidQ(bitmap)
                 Toast.makeText(baseContext, "이미지 저장이 완료되었습니다.", Toast.LENGTH_SHORT).show()
             } else {
                 // Q 버전 이하일 경우. 저장소 권한을 얻어온다.
                 val writePermission = ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
                 if(writePermission == PackageManager.PERMISSION_GRANTED) {
-                    saveImageOnUnderAndroidQ(drawingView.getBitmapFromPaths())
+                    saveImageOnUnderAndroidQ(bitmap)
                     Toast.makeText(baseContext, "이미지 저장이 완료되었습니다.", Toast.LENGTH_SHORT).show()
                 } else {
                     val requestExternalStorageCode = 1
@@ -317,7 +338,8 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             titleEditText.clearFocus()
         } else {
             super.onBackPressed()
-            saveMemoToInternalStorage()
+            val bitmap = combineViewsToBitmap(container)
+            saveMemoToInternalStorage(bitmap)
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_THIRD)
             intent.putExtra("drawing_memo_title", memo_title)
@@ -371,8 +393,8 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         return dateFormat.format(date)
     }
 
-    private fun saveMemoToInternalStorage() {
-        val memoModel = MemoModel(memo_title, getCurrentDateTime(), drawingView.getBitmapFromPaths())
+    private fun saveMemoToInternalStorage(bitmap: Bitmap) {
+        val memoModel = MemoModel(memo_title, getCurrentDateTime(), bitmap)
 
         // MemoModel을 내부 저장소에 저장합니다.
         saveMemoModelToInternalStorage(memoModel)
@@ -500,7 +522,22 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         }
     }
 
+    fun combineViewsToBitmap(frameLayout: FrameLayout): Bitmap {
+        // Get the dimensions of the FrameLayout
+        val width = frameLayout.width
+        val height = frameLayout.height
 
+        // Create a Bitmap with the dimensions of the FrameLayout
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+        // Create a Canvas using the Bitmap
+        val canvas = Canvas(bitmap)
+
+        // Draw the FrameLayout onto the Canvas
+        frameLayout.draw(canvas)
+
+        return bitmap
+    }
 
 
 }

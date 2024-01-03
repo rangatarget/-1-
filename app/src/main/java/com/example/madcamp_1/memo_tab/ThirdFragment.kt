@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.madcamp_1.MainActivity
-import com.example.madcamp_1.TextMemoEditActivity
 import com.example.madcamp_1.databinding.FragmentThirdBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.File

@@ -38,9 +38,14 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ffffff"
+            android:background="@color/white"
             android:layout_weight="1"
             android:id="@+id/containers">
+            <ImageView
+                android:id="@+id/drawingBg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
 
             <com.example.madcamp_1.memo_tab.DrawingView
                 android:id="@+id/drawingView"

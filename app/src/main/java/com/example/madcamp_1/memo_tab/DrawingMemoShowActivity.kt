@@ -34,6 +34,7 @@ class DrawingMemoShowActivity : AppCompatActivity() {
     lateinit var drawingMemoTitle : String
     lateinit var drawingMemoDate: String
     lateinit var drawingMemoShow : ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val binding = ActivityDrawingMemoShowBinding.inflate(layoutInflater)
 
@@ -83,7 +84,7 @@ class DrawingMemoShowActivity : AppCompatActivity() {
                 finish()
                 return true
             }
-            (item.itemId) -> {
+            R.id.menu_save -> {
                 getBitmapFromImageView(drawingMemoShow)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     //Q 버전 이상일 경우. (안드로이드 10, API 29 이상일 경우)
@@ -106,6 +107,15 @@ class DrawingMemoShowActivity : AppCompatActivity() {
                         ActivityCompat.requestPermissions(this, permissionStorage, requestExternalStorageCode)
                     }
                 }
+                return true
+            }
+            R.id.menu_edit -> {
+                val intent = Intent(this, DrawingMemoEditActivity::class.java)
+                intent.putExtra("drawing_memo_title", drawingMemoTitle )
+                intent.putExtra("drawing_memo_date", drawingMemoDate)
+                startActivity(intent)
+                finish()
+
                 return true
             }
             // 필요에 따라 추가 메뉴 아이템 처리

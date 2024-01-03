@@ -34,7 +34,8 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         super.onSizeChanged(w, h, oldw, oldh)
         bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
         canvas = Canvas(bitmap!!)
-        canvas?.drawColor(Color.WHITE)
+        // 배경 색상을 투명으로 설정
+        canvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
     }
 
     override fun onDraw(canvas: Canvas) {

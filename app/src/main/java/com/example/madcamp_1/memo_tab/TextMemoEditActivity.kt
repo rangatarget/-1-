@@ -1,4 +1,4 @@
-package com.example.madcamp_1
+package com.example.madcamp_1.memo_tab
 
 import android.content.Context
 import android.content.Intent
@@ -11,9 +11,11 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.LinearLayout
+import com.example.madcamp_1.MainActivity
+import com.example.madcamp_1.R
 import com.example.madcamp_1.databinding.ActivityTextMemoEditBinding
-import com.example.madcamp_1.memo_tab.MemoModel
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -25,6 +27,8 @@ class TextMemoEditActivity : AppCompatActivity() {
     lateinit var textContentContainer : LinearLayout
     lateinit var memo_title : String
     lateinit var textContent : String
+
+    lateinit var bitmap: Bitmap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val binding = ActivityTextMemoEditBinding.inflate(layoutInflater)
@@ -59,6 +63,7 @@ class TextMemoEditActivity : AppCompatActivity() {
             }
             return@setOnKeyListener false // 다른 키 이벤트는 기본 동작으로 처리
         }
+
 
 
     }
@@ -128,4 +133,22 @@ class TextMemoEditActivity : AppCompatActivity() {
             Log.e("MemoModel", "MemoModel 저장 중 오류 발생: ${e.message}")
         }
     }
+    fun combineViewsToBitmap(frameLayout: FrameLayout): Bitmap {
+        // Get the dimensions of the FrameLayout
+        val width = frameLayout.width
+        val height = frameLayout.height
+
+        // Create a Bitmap with the dimensions of the FrameLayout
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+        // Create a Canvas using the Bitmap
+        val canvas = Canvas(bitmap)
+
+        // Draw the FrameLayout onto the Canvas
+        frameLayout.draw(canvas)
+
+        return bitmap
+    }
+
+
 }

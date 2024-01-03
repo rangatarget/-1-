@@ -36,7 +36,7 @@
             android:name=".memo_tab.DrawingMemoEditActivity"
             android:exported="false" />
         <activity
-            android:name=".TextMemoEditActivity"
+            android:name=".memo_tab.TextMemoEditActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
         <activity
