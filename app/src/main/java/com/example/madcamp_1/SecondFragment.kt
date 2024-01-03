@@ -168,7 +168,7 @@ class SecondFragment : Fragment() {
         Log.v("onActivityResult", "image_len: " + image_len.toString())
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                2000 -> {
+                2000 -> { //gallery
                     val uri = data?.data
                     val destinationFileName = "gallery_image_" + image_len.toString() + ".jpg"
                     context?.let { saveUriToFile(it, uri.toString(), destinationFileName) }
@@ -178,7 +178,7 @@ class SecondFragment : Fragment() {
                 }
             }
             when (requestCode) {
-                2001 -> {
+                2001 -> { //camera
                     val imageBitmap = data?.extras?.get("data") as Bitmap
                     val destinationFileName = "gallery_image_" + image_len.toString() + ".jpg"
                     context?.let { saveBitmapToFile(it, imageBitmap, destinationFileName) }
