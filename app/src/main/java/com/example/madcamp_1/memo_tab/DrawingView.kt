@@ -1,14 +1,11 @@
-package com.example.madcamp_1
+package com.example.madcamp_1.memo_tab
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Button
-import kotlin.properties.Delegates
 
 class ColoredPath(val path: Path, var color: Int, var strokeWidth: Float)
 
@@ -37,7 +34,8 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         super.onSizeChanged(w, h, oldw, oldh)
         bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
         canvas = Canvas(bitmap!!)
-        canvas?.drawColor(Color.WHITE)
+        // 배경 색상을 투명으로 설정
+        canvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -120,6 +118,10 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         return coloredPaths
     }
 
+    fun setLastestColor(color: Int){
+        latestColor = color
+    }
+
     fun getBitmapFromPaths(): Bitmap {
         val tempBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val tempCanvas = Canvas(tempBitmap)
@@ -135,6 +137,17 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
 
         return tempBitmap
     }
-
+    fun setBitmapAsBackground(backgroundBitmap: Bitmap) {
+        // Set the provided bitmap as the background
+        canvas?.drawBitmap(backgroundBitmap, 0f, 0f, null)
+        // Redraw the existing paths on top of the background
+        for (coloredPath in coloredPaths) {
+            paint.color = coloredPath.color
+            paint.strokeWidth = coloredPath.strokeWidth
+            canvas?.drawPath(coloredPath.path, paint)
+        }
+        // Invalidate the view to trigger onDraw
+        invalidate()
+    }
 }
 
