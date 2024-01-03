@@ -115,7 +115,6 @@ class DrawingMemoShowActivity : AppCompatActivity() {
                 intent.putExtra("drawing_memo_date", drawingMemoDate)
                 startActivity(intent)
                 finish()
-
                 return true
             }
             // 필요에 따라 추가 메뉴 아이템 처리
