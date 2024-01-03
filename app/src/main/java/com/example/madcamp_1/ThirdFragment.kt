@@ -75,6 +75,7 @@ class ThirdFragment : Fragment() {
 
 <<<<<<< HEAD
 =======
+
         val img = context?.let { loadBitmapFromInternalStorage(it, "${MainActivity.drawingMemoDate}.jpg") }
 
         if (img==null){

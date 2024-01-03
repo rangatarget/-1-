@@ -27,8 +27,7 @@
         app:layout_constraintTop_toTopOf="@id/button2"
         app:layout_constraintBottom_toBottomOf="@id/button2"
         app:layout_constraintStart_toStartOf="@id/button2"
-        app:layout_constraintEnd_toEndOf="@id/button2"
-        app:backgroundTint="@color/colorAccent" />
+        app:layout_constraintEnd_toEndOf="@id/button2" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button22"
@@ -39,8 +38,7 @@
         app:layout_constraintTop_toTopOf="@id/button2"
         app:layout_constraintBottom_toBottomOf="@id/button2"
         app:layout_constraintStart_toStartOf="@id/button2"
-        app:layout_constraintEnd_toEndOf="@id/button2"
-        app:backgroundTint="@color/colorAccent" />
+        app:layout_constraintEnd_toEndOf="@id/button2" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button2"
