@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -86,7 +87,8 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             ))
             Log.d("??", "왜 여기로 오는거야")
             memo_title = drawingMemoTitle as String
-            binding.titleEdit.hint = drawingMemoTitle
+            binding.titleEdit.text = Editable.Factory.getInstance().newEditable(drawingMemoTitle)
+
         } else {
             memo_title = "(제목 없음)"
         }

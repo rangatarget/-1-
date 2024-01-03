@@ -63,7 +63,7 @@ class TextMemoEditActivity : AppCompatActivity() {
             val content = MyApplication.prefs.getString("${textMemoTitle}_${textMemoDate}", "default")
             binding.memoContent.text = Editable.Factory.getInstance().newEditable(content)
             memo_title = textMemoTitle as String
-            binding.titleEdit.hint = textMemoTitle
+            binding.titleEdit.text = Editable.Factory.getInstance().newEditable(textMemoTitle)
         } else {
             memo_title = "(제목 없음)"
         }
