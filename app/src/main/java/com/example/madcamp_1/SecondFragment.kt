@@ -14,17 +14,25 @@ import androidx.core.content.ContextCompat
 import com.example.madcamp_1.databinding.FragmentSecondBinding
 import android.animation.*
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class SecondFragment : Fragment() {
     private val REQUEST_PERMISSIONS_READ_MEDIA_IMAGES = 1000
@@ -32,6 +40,7 @@ class SecondFragment : Fragment() {
     private var isFabOpen = false
     private var imagelist = ArrayList<ImageModel>()
     private var image_len = 0
+    private var photoURI: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,9 +60,29 @@ class SecondFragment : Fragment() {
             if (isFabOpen) {
                 ObjectAnimator.ofFloat(binding.button21, "translationY", 0f).apply { start() }
                 ObjectAnimator.ofFloat(binding.button22, "translationY", 0f).apply { start() }
+                ObjectAnimator.ofPropertyValuesHolder(
+                    binding.button21,
+                    PropertyValuesHolder.ofFloat("scaleX", 0.3f),
+                    PropertyValuesHolder.ofFloat("scaleY", 0.3f)
+                ).apply { start() }
+                ObjectAnimator.ofPropertyValuesHolder(
+                    binding.button22,
+                    PropertyValuesHolder.ofFloat("scaleX", 0.3f),
+                    PropertyValuesHolder.ofFloat("scaleY", 0.3f)
+                ).apply { start() }
             } else {
                 ObjectAnimator.ofFloat(binding.button21, "translationY", -200f).apply { start() }
                 ObjectAnimator.ofFloat(binding.button22, "translationY", -400f).apply { start() }
+                ObjectAnimator.ofPropertyValuesHolder(
+                    binding.button21,
+                    PropertyValuesHolder.ofFloat("scaleX", 1f),
+                    PropertyValuesHolder.ofFloat("scaleY", 1f)
+                ).apply { start() }
+                ObjectAnimator.ofPropertyValuesHolder(
+                    binding.button22,
+                    PropertyValuesHolder.ofFloat("scaleX", 1f),
+                    PropertyValuesHolder.ofFloat("scaleY", 1f)
+                ).apply { start() }
             }
 
             isFabOpen = !isFabOpen
@@ -160,10 +189,12 @@ class SecondFragment : Fragment() {
     }
 
     private fun performActionWithPermissions_Camera() {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (context?.let { takePictureIntent.resolveActivity(it.packageManager) } != null) {
-            startActivityForResult(takePictureIntent, 2001)
-        }
+        val uri : Uri? = createImageUri("JPEG_${timeStamp}_", "image/jpeg")
+        photoURI = uri
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+        startActivityForResult(takePictureIntent, 2001)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -174,7 +205,7 @@ class SecondFragment : Fragment() {
                 2000 -> { //gallery
                     val uri = data?.data
                     val destinationFileName = "gallery_image_" + image_len.toString() + ".jpg"
-                    context?.let { saveUriToFile(it, uri.toString(), destinationFileName) }
+                    context?.let { saveGalleryToFile(it, uri.toString(), destinationFileName) }
                     image_len = image_len + 1
                     MyApplication.prefs.setString("image_len", image_len.toString())
                     MyApplication.prefs.setString("deleted", "")
@@ -182,9 +213,11 @@ class SecondFragment : Fragment() {
             }
             when (requestCode) {
                 2001 -> { //camera
-                    val imageBitmap = data?.extras?.get("data") as Bitmap
-                    val destinationFileName = "gallery_image_" + image_len.toString() + ".jpg"
-                    context?.let { saveBitmapToFile(it, imageBitmap, destinationFileName) }
+                    if( photoURI != null)
+                    {
+                        val bitmap = context?.let { saveCameraToFile(it, photoURI!!, "gallery_image_" + image_len.toString() + ".jpg") }
+                        photoURI = null
+                    }
                     image_len = image_len + 1
                     MyApplication.prefs.setString("image_len", image_len.toString())
                     MyApplication.prefs.setString("deleted", "")
@@ -205,8 +238,8 @@ class SecondFragment : Fragment() {
         rcvgallery?.adapter = adapter
         rcvgallery?.layoutManager = GridLayoutManager(requireContext(), 3)
     }
-    private fun saveUriToFile(context: Context, uri: String, filename: String) {
-        val inputStream: InputStream? = context.contentResolver.openInputStream(android.net.Uri.parse(uri))
+    private fun saveGalleryToFile(context: Context, uri: String, filename: String) {
+        val inputStream: InputStream? = context.contentResolver.openInputStream(Uri.parse(uri))
 
         if (inputStream != null) {
             // 비트맵으로 변환
@@ -214,16 +247,20 @@ class SecondFragment : Fragment() {
 
             // 비트맵을 파일로 저장
             val outputStream: FileOutputStream = context.openFileOutput(filename, Context.MODE_PRIVATE)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
             outputStream.flush()
             outputStream.close()
 
         }
     }
-    private fun saveBitmapToFile(context: Context, bitmap: Bitmap, filename: String) {
+    @RequiresApi(Build.VERSION_CODES.P)
+    private fun saveCameraToFile(context: Context, uri: Uri, filename: String) {
+        var image: Bitmap? = null
+        image = ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
+
         // 비트맵을 파일로 저장
         val outputStream: FileOutputStream = context.openFileOutput(filename, Context.MODE_PRIVATE)
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        image.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
         outputStream.flush()
         outputStream.close()
     }
@@ -256,4 +293,17 @@ class SecondFragment : Fragment() {
             performActionWithPermissions_Camera()
         }
     }
+    //새로운 시도
+    private fun createImageUri(filename:String, mimeType:String): Uri?{
+        var values = ContentValues()
+        values.put(MediaStore.Images.Media.DISPLAY_NAME,filename)
+        values.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
+        return context?.contentResolver?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+    }
+
+    private fun dispatchTakePictureIntentEx()
+    {
+
+    }
+
 }
