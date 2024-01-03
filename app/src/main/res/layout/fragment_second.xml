@@ -5,7 +5,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="#FFFFFF"
+    tools:context=".SecondFragment">
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvGallery"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:layout_editor_absoluteX="-201dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:listitem="@layout/item_gallery" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button21"
@@ -16,7 +27,8 @@
         app:layout_constraintTop_toTopOf="@id/button2"
         app:layout_constraintBottom_toBottomOf="@id/button2"
         app:layout_constraintStart_toStartOf="@id/button2"
-        app:layout_constraintEnd_toEndOf="@id/button2"/>
+        app:layout_constraintEnd_toEndOf="@id/button2"
+        app:backgroundTint="@color/white"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button22"
@@ -27,7 +39,8 @@
         app:layout_constraintTop_toTopOf="@id/button2"
         app:layout_constraintBottom_toBottomOf="@id/button2"
         app:layout_constraintStart_toStartOf="@id/button2"
-        app:layout_constraintEnd_toEndOf="@id/button2"/>
+        app:layout_constraintEnd_toEndOf="@id/button2"
+        app:backgroundTint="@color/white"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button2"
@@ -36,16 +49,23 @@
         android:layout_margin="24dp"
         app:srcCompat="@drawable/plus"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:backgroundTint="@color/colorAccent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcvGallery"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/background_contact_rcv"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:layout_editor_absoluteX="0dp"
-        tools:listitem="@layout/item_gallery" />
-
+    <TextView
+        android:id="@+id/initialmsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="사진을 추가해주세요"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:textColor="#A4A4A4"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

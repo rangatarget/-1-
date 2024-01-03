@@ -38,20 +38,16 @@ class ImageFullScreen : AppCompatActivity() {
         //뒤로가기 눌렀을때 fragment2로 이동
         binding.backButton.setOnClickListener {
             Log.v("뒤로가기 누름", "")
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("deleted", "")
-            intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_SECOND)
-            startActivity(intent)
+            MyApplication.prefs.setString("deleted", "")
             finish()
         }
 
         //삭제버튼 눌렀을 때
         binding.delete.setOnClickListener {
             Log.v("삭제버튼 누름", "")
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("deleted", index.toString())
-            intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_SECOND)
-            startActivity(intent)
+            if (index != null) {
+                MyApplication.prefs.setString("deleted", index)
+            }
             finish()
         }
 

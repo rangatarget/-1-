@@ -128,33 +128,6 @@ class ThirdFragment : Fragment() {
         isFabOpen = !isFabOpen
     }
 
-    fun generateRandomDate(): String {
-        val calendar = Calendar.getInstance()
-        val year = (Math.random() * 10).toInt() + 2020 // 임의의 년도 (2020 ~ 2029)
-        val month = (Math.random() * 12).toInt() + 1 // 임의의 월 (1 ~ 12)
-        val day = (Math.random() * 28).toInt() + 1 // 임의의 일 (1 ~ 28)
-
-        calendar.set(year, month, day)
-        return "${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH)}-${calendar.get(Calendar.DAY_OF_MONTH)}"
-    }
-
-    fun loadBitmapFromInternalStorage(context: Context, fileName: String): Bitmap? {
-        val file = File(context.cacheDir, fileName)
-
-        return if (file.exists()) {
-            try {
-                val fileInputStream = FileInputStream(file)
-                val bitmap = BitmapFactory.decodeStream(fileInputStream)
-                fileInputStream.close()
-                bitmap
-            } catch (e: IOException) {
-                e.printStackTrace()
-                null
-            }
-        } else {
-            null
-        }
-    }
 
     private fun loadAllMemoModels() {
         try {
