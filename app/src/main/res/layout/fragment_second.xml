@@ -66,6 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         app:srcCompat="@drawable/plus"
+        app:maxImageSize="40dp"
         android:layout_gravity="bottom|end"
         app:backgroundTint="@color/colorAccent"/>
 
