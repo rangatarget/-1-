@@ -63,6 +63,7 @@ class FirstFragment : Fragment() {
             }
 
         }
+
         if (activity?.let { checkContactsPermission(it) } == true) {
             binding.appBarLayout.visibility = View.VISIBLE
             binding.btnGetContact.visibility = View.GONE

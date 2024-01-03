@@ -2,42 +2,61 @@ package com.example.madcamp_1
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.media.MediaScannerConnection
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.SeekBar
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
 import com.example.madcamp_1.databinding.ActivityDrawingMemoEditBinding
-
+import yuku.ambilwarna.AmbilWarnaDialog
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 
 class DrawingMemoEditActivity : AppCompatActivity() {
 
     private var isBrushMenuOn = false
     private var isEraserMenuOn = false
+    lateinit var drawingView: DrawingView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val binding = ActivityDrawingMemoEditBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.title = ""
+
         binding.backButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_THIRD)
             startActivity(intent)
-            //finish()
+            finish()
         }
 
-        val drawingView = binding.drawingView
+        drawingView = binding.drawingView
 
         val btnBrush = binding.btnBrush
         val btnEraser = binding.btnEraser
         val btnBack = binding.btnBack
+        val btnForward = binding.btnForward
+        val btnSaveImg = binding.btnSaveImg
 
         val bgBrush = binding.bgBrush
         val bgEraser = binding.bgEraser
@@ -60,6 +79,13 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         eraserMenu.scaleY = 0.1f
 
         btnBrush.setOnClickListener {
+            drawingView.setStrokeWidth(brushSeekBar.progress.toFloat())
+
+            isEraserMenuOn = false
+            eraserMenu.y += 500f
+            eraserMenu.scaleX = 0.1f
+            eraserMenu.scaleY = 0.1f
+
             val targetScaleClosed = 0.1f
             val targetScaleOpen = 1f
 
@@ -86,6 +112,42 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             bgBrush.visibility = View.VISIBLE
             bgEraser.visibility = View.INVISIBLE
             drawingView.setEraserMode(false)
+        }
+
+        btnEraser.setOnClickListener {
+            drawingView.setStrokeWidth(eraserSeekBar.progress.toFloat())
+
+            isBrushMenuOn = false
+            brushMenu.y += 500f
+            brushMenu.scaleX = 0.1f
+            brushMenu.scaleY = 0.1f
+
+            val targetScaleClosed = 0.1f
+            val targetScaleOpen = 1f
+
+            if (isEraserMenuOn) {
+                ObjectAnimator.ofFloat(eraserMenu, "translationY", 500f).apply { start() }
+                ObjectAnimator.ofPropertyValuesHolder(
+                    eraserMenu,
+                    PropertyValuesHolder.ofFloat("scaleX", targetScaleClosed),
+                    PropertyValuesHolder.ofFloat("scaleY", targetScaleClosed)
+                ).apply { start() }
+                isEraserMenuOn = false
+            }
+            else if (!isEraserMenuOn && bgEraser.visibility == View.VISIBLE){
+
+                ObjectAnimator.ofFloat(eraserMenu, "translationY", 0f).apply { start() }
+                ObjectAnimator.ofPropertyValuesHolder(
+                    eraserMenu,
+                    PropertyValuesHolder.ofFloat("scaleX", targetScaleOpen),
+                    PropertyValuesHolder.ofFloat("scaleY", targetScaleOpen)
+                ).apply { start() }
+                isEraserMenuOn = true
+            }
+
+            bgEraser.visibility = View.VISIBLE
+            bgBrush.visibility = View.INVISIBLE
+            drawingView.setEraserMode(true)
         }
 
         brushSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -130,39 +192,113 @@ class DrawingMemoEditActivity : AppCompatActivity() {
             }
         })
 
-        btnEraser.setOnClickListener {
-            drawingView.setStrokeWidth(eraserSeekBar.progress.toFloat())
-
-            val targetScaleClosed = 0.1f
-            val targetScaleOpen = 1f
-
-            if (isEraserMenuOn) {
-                ObjectAnimator.ofFloat(eraserMenu, "translationY", 500f).apply { start() }
-                ObjectAnimator.ofPropertyValuesHolder(
-                    eraserMenu,
-                    PropertyValuesHolder.ofFloat("scaleX", targetScaleClosed),
-                    PropertyValuesHolder.ofFloat("scaleY", targetScaleClosed)
-                ).apply { start() }
-                isEraserMenuOn = false
-            }
-            else if (!isEraserMenuOn && bgEraser.visibility == View.VISIBLE){
-
-                ObjectAnimator.ofFloat(eraserMenu, "translationY", 0f).apply { start() }
-                ObjectAnimator.ofPropertyValuesHolder(
-                    eraserMenu,
-                    PropertyValuesHolder.ofFloat("scaleX", targetScaleOpen),
-                    PropertyValuesHolder.ofFloat("scaleY", targetScaleOpen)
-                ).apply { start() }
-                isEraserMenuOn = true
-            }
-
-            bgEraser.visibility = View.VISIBLE
-            bgBrush.visibility = View.INVISIBLE
-            drawingView.setEraserMode(true)
-        }
-
         btnBack.setOnClickListener {
             drawingView.undoLastPath()
+        }
+
+        btnForward.setOnClickListener {
+            drawingView.redoLastPath()
+        }
+
+        val btnColorPicker = binding.btnColorPicker
+        val brushColor = binding.brushColor
+
+        val btnRed = binding.btnRed
+        val btnOrange = binding.btnOrange
+        val btnYellow = binding.btnYellow
+        val btnGreen = binding.btnGreen
+        val btnBlue = binding.btnBlue
+        val btnBrown = binding.btnBrown
+        val btnGray = binding.btnGray
+        val btnBlueGray = binding.btnBlueGray
+        val btnDarkGray = binding.btnDarkGary
+
+        btnRed.setOnClickListener {
+            setBasicColor("#FF2F22",brushColor)
+        }
+
+        btnOrange.setOnClickListener {
+            setBasicColor("#FF9800",brushColor)
+        }
+
+        btnYellow.setOnClickListener {
+            setBasicColor("#FFE03B",brushColor)
+        }
+
+        btnGreen.setOnClickListener {
+            setBasicColor("#4CAF50",brushColor)
+        }
+
+        btnBlue.setOnClickListener {
+            setBasicColor("#4490EA",brushColor)
+        }
+
+        btnBlue.setOnClickListener {
+            setBasicColor("#4490EA",brushColor)
+        }
+
+        btnBrown.setOnClickListener {
+            setBasicColor("#795548",brushColor)
+        }
+
+        btnGray.setOnClickListener {
+            setBasicColor("#9E9E9E",brushColor)
+        }
+
+        btnBlueGray.setOnClickListener {
+            setBasicColor("#607D8B",brushColor)
+        }
+
+        btnDarkGray.setOnClickListener {
+            setBasicColor("#333333",brushColor)
+        }
+
+        btnColorPicker.setOnClickListener {
+            openColorPicker(drawingView, brushColor, drawingView.getColor())
+        }
+
+        btnSaveImg.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                //Q 버전 이상일 경우. (안드로이드 10, API 29 이상일 경우)
+                //saveImageOnAboveAndroidQ(bitmap)
+                saveBitmapToGallery(this, drawingView.getBitmapFromPaths(), "Test", "test")
+                Toast.makeText(baseContext, "이미지 저장이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                // Q 버전 이하일 경우. 저장소 권한을 얻어온다.
+                val writePermission = ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+                if(writePermission == PackageManager.PERMISSION_GRANTED) {
+                    //saveImageOnUnderAndroidQ(bitmap)
+                    Toast.makeText(baseContext, "이미지 저장이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                } else {
+                    val requestExternalStorageCode = 1
+
+                    val permissionStorage = arrayOf(
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+
+                    ActivityCompat.requestPermissions(this, permissionStorage, requestExternalStorageCode)
+                }
+            }
+        }
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_drawing, menu)
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_delete -> {
+
+                return true
+            }
+            // 필요에 따라 추가 메뉴 아이템 처리
+            else -> return super.onOptionsItemSelected(item)
         }
     }
 
@@ -171,6 +307,7 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra(MainActivity.FRAGMENT_TO_SHOW, MainActivity.FRAGMENT_THIRD)
         startActivity(intent)
+        finish()
     }
 
     private fun isTouchOutsideView(event: MotionEvent, view: View): Boolean {
@@ -181,6 +318,52 @@ class DrawingMemoEditActivity : AppCompatActivity() {
         return !(event.x > x && event.x < x + view.width && event.y > y && event.y < y + view.height)
     }
 
+    private fun openColorPicker(dV : DrawingView, brushColor : Button, defaultColor : Int) {
+        val awd = AmbilWarnaDialog(
+            this,
+            defaultColor,
+            object : AmbilWarnaDialog.OnAmbilWarnaListener {
+                override fun onCancel(dialog: AmbilWarnaDialog) {
+                    // onCancel 내용
+                }
+
+                override fun onOk(dialog: AmbilWarnaDialog?, color: Int) {
+                    dV.setColor(color)
+                    brushColor.backgroundTintList = ColorStateList.valueOf(color)
+                }
+            }
+        )
+        awd.show()
+    }
+
+    fun setBasicColor(color : String, brushColor : Button){
+        drawingView.setColor(Color.parseColor(color))
+        brushColor.backgroundTintList = ColorStateList.valueOf(Color.parseColor(color))
+    }
+
+    fun saveBitmapToGallery(context: Context, bitmap: Bitmap, title: String, description: String) {
+        // Get the directory for the user's public pictures directory.
+        val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        val file = File(path, "$title.jpg")
+
+        try {
+            // Save the bitmap to the file
+            val stream: OutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            stream.close()
+
+            // Notify the media scanner
+            MediaScannerConnection.scanFile(
+                context,
+                arrayOf(file.toString()),
+                arrayOf("image/jpeg"),
+                null
+            )
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
 
 }

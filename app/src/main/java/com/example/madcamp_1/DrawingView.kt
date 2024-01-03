@@ -1,10 +1,14 @@
 package com.example.madcamp_1
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
+import kotlin.properties.Delegates
 
 class ColoredPath(val path: Path, var color: Int, var strokeWidth: Float)
 
@@ -15,10 +19,14 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     private val paint = Paint()
     private var paths: MutableList<Path> = mutableListOf()
     private var coloredPaths: MutableList<ColoredPath> = mutableListOf()
+    private var undonePaths: MutableList<ColoredPath> = mutableListOf()
 
     private var isEraserMode = false
     private var currentColor = Color.BLACK
     private var currentStrokeWidth = 10f
+
+    private var latestColor = Color.BLACK
+    private var eraserCheck = 0
 
     init {
         paint.isAntiAlias = true
@@ -46,6 +54,10 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         currentColor = color
     }
 
+    fun getColor() : Int {
+        return currentColor
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val x = event.x
         val y = event.y
@@ -61,7 +73,6 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                 coloredPaths.lastOrNull()?.path?.lineTo(x, y)
             }
             MotionEvent.ACTION_UP -> {
-                // Nothing to do here for now
             }
         }
 
@@ -81,18 +92,49 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     fun setEraserMode(eraser:Boolean){
         isEraserMode = eraser
         if(isEraserMode==true){
+            if(eraserCheck==0) latestColor = this.getColor()
+            eraserCheck++
             this.setColor(Color.WHITE)
-            //this.setStrokeWidth(10f)
         }else{
-            this.setColor(Color.BLACK)
-            //this.setStrokeWidth(10f)
+            eraserCheck=0
+            this.setColor(latestColor)
         }
     }
     fun undoLastPath() {
         if (coloredPaths.isNotEmpty()) {
-            coloredPaths.removeAt(coloredPaths.size - 1)
+            val undonePath = coloredPaths.removeAt(coloredPaths.size - 1)
+            undonePaths.add(undonePath)
             invalidate()
         }
     }
+
+    fun redoLastPath() {
+        if (undonePaths.isNotEmpty()) {
+            val redoPath = undonePaths.removeAt(undonePaths.size - 1)
+            coloredPaths.add(redoPath)
+            invalidate()
+        }
+    }
+
+    fun getColoredPaths():MutableList<ColoredPath>{
+        return coloredPaths
+    }
+
+    fun getBitmapFromPaths(): Bitmap {
+        val tempBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val tempCanvas = Canvas(tempBitmap)
+        tempCanvas.drawColor(Color.WHITE)
+
+        for (coloredPath in coloredPaths) {
+            paint.color = coloredPath.color
+            paint.strokeWidth = coloredPath.strokeWidth
+            tempCanvas.drawPath(coloredPath.path, paint)
+        }
+
+        Log.d("비트맵 변환 확인", "$tempBitmap")
+
+        return tempBitmap
+    }
+
 }
 
