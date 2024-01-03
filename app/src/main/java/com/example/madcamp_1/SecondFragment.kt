@@ -119,11 +119,13 @@ class SecondFragment : Fragment() {
         //글씨 업데이트
         val blankmsg = activity?.findViewById<TextView>(R.id.initialmsg)
         if(image_len == 0) {
+            Log.v("initial msg 지우기", image_len.toString())
             if (blankmsg != null) {
                 blankmsg.visibility = View.VISIBLE
             }
         }
         else {
+            Log.v("initial msg 띄우기", image_len.toString())
             if (blankmsg != null) {
                 blankmsg.visibility = View.GONE
             }

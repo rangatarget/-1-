@@ -27,7 +27,8 @@
         app:layout_constraintTop_toTopOf="@id/button2"
         app:layout_constraintBottom_toBottomOf="@id/button2"
         app:layout_constraintStart_toStartOf="@id/button2"
-        app:layout_constraintEnd_toEndOf="@id/button2"/>
+        app:layout_constraintEnd_toEndOf="@id/button2"
+        app:backgroundTint="@color/colorAccent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button22"
@@ -38,7 +39,8 @@
         app:layout_constraintTop_toTopOf="@id/button2"
         app:layout_constraintBottom_toBottomOf="@id/button2"
         app:layout_constraintStart_toStartOf="@id/button2"
-        app:layout_constraintEnd_toEndOf="@id/button2"/>
+        app:layout_constraintEnd_toEndOf="@id/button2"
+        app:backgroundTint="@color/colorAccent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button2"
@@ -47,7 +49,8 @@
         android:layout_margin="24dp"
         app:srcCompat="@drawable/plus"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:backgroundTint="@color/colorAccent" />
 
     <TextView
         android:id="@+id/initialmsg"
